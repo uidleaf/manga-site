@@ -1,263 +1,235 @@
 {% extends 'base.html' %}
 {% block content %}
 
-<!-- 导引策展前言 (Editorial Introductory Masthead) -->
-{% if not q and not source and page == 1 %}
-<section class="editorial-masthead">
-  <div class="masthead-meta-row">
-    <span class="masthead-tag">COLLECTED STORIES · 独立数字纸墨档案</span>
-    <span class="masthead-date">CURATED ARCHIVE EDITION</span>
-  </div>
-  <h1 class="masthead-title">数字化纸墨画廊与独立漫画典藏馆</h1>
-  <p class="masthead-lead">
-    汇聚逾 {{ total_all|default(5597) }} 部艺术画格与分卷叙事。摒弃冗余噪音与商业算法，重归如纸墨相融般静谧纯粹的沉浸品读体验。
-  </p>
-</section>
-{% endif %}
-
-<!-- 首页专属：主策展区 (Asymmetric Editorial Featured Focal Showcase) -->
-{% if not q and not source and page == 1 and featured_manga %}
-<section class="editorial-hero">
-  <!-- 主推荐大型展位 -->
-  <div class="hero-feature-card">
-    <div class="hero-feature-bg">
-      <div class="sunset-glow"></div>
-      <div class="mountain-silhouette">
-        <svg viewBox="0 0 500 180" fill="none" preserveAspectRatio="none">
-          <path d="M0 180L140 70L280 180H0Z" fill="#c8684f" fill-opacity="0.18"/>
-          <path d="M120 180L270 50L420 180H120Z" fill="#415d66" fill-opacity="0.15"/>
-          <path d="M260 180L380 85L500 180H260Z" fill="#6b8271" fill-opacity="0.2"/>
-        </svg>
-      </div>
+<div class="editorial-gallery-room">
+  <!-- 01. 导引策展前言 (Editorial Introductory Masthead) -->
+  {% if not q and not source and page == 1 %}
+  <section class="gallery-masthead">
+    <div class="masthead-eyebrow font-mono">
+      <span>ARCHIVAL MONOGRAPH</span>
+      <span class="eyebrow-sep">/</span>
+      <span>2026 CURATED EDITION</span>
     </div>
-    <div class="hero-feature-body">
-      <div class="hero-feature-visual">
-        <a href="/manga/{{ featured_manga.id }}" class="hero-cover-frame">
-          <img src="/thumb/{{ featured_manga.id }}" alt="{{ featured_manga.title }}">
-          <span class="exhibit-tag">FEATURED EXHIBIT · {{ featured_manga.page_count }}P</span>
+    <h1 class="gallery-headline font-serif">数字化纸墨画廊 · 独立漫画艺术典藏</h1>
+    <p class="gallery-lead">
+      汇聚逾 {{ total_all|default(5597) }} 部艺术画格与分卷叙事。摒弃冗余噪音与商业算法，重归如纸墨相融般静谧纯粹的沉浸品读体验。
+    </p>
+  </section>
+  {% endif %}
+
+  <!-- 02. 主策展特辑展位 (Large FEATURED MANGA Composition) -->
+  {% if not q and not source and page == 1 and featured_manga %}
+  <section class="curated-featured-monograph">
+    <div class="featured-artwork-mount">
+      <a href="/manga/{{ featured_manga.id }}" class="featured-cover-link">
+        <img class="featured-cover-img" src="/thumb/{{ featured_manga.id }}" alt="{{ featured_manga.title }}">
+        <span class="featured-artwork-stamp font-mono">№ 01 · CURATED EXHIBIT</span>
+      </a>
+    </div>
+
+    <div class="featured-curation-text">
+      <div class="curation-meta-strip font-mono">
+        <span class="meta-dot"></span>
+        <span class="meta-source">{{ featured_manga.source_name }} 站点收录</span>
+        <span class="meta-sep">/</span>
+        <span class="meta-counts">{{ featured_manga.chapter_count }} CHAPTERS · {{ featured_manga.page_count }} PAGES</span>
+      </div>
+
+      <h2 class="featured-manga-title font-serif">
+        <a href="/manga/{{ featured_manga.id }}">{{ featured_manga.title }}</a>
+      </h2>
+
+      <p class="featured-manga-desc">
+        精选分卷数字化档案。收录于站点 <strong>「{{ featured_manga.source_name }}」</strong>，共 <strong>{{ featured_manga.chapter_count }}</strong> 卷/话，<strong>{{ featured_manga.page_count }}</strong> 幅画格图像。
+      </p>
+
+      <div class="featured-action-wrap">
+        <a class="btn-editorial-enter font-mono" href="/manga/{{ featured_manga.id }}">
+          <span>✦ 进入画境品读 ENTER ARCHIVE</span>
         </a>
       </div>
-      <div class="hero-feature-text">
-        <div class="editorial-label">
-          <div class="editorial-label-left">
-            <span class="curation-dot"></span>
-            <span>CURATED EXHIBIT · 馆藏特辑推荐</span>
-          </div>
-          <span class="editorial-meta-tag">{{ featured_manga.chapter_count }} 卷/话 · {{ featured_manga.page_count }}P</span>
-        </div>
-        <h2 class="hero-manga-title">
-          <a href="/manga/{{ featured_manga.id }}">{{ featured_manga.title }}</a>
-        </h2>
-        <p class="hero-manga-desc">
-          精选分卷数字化档案。收录于站点 <strong>「{{ featured_manga.source_name }}」</strong>，共 <strong>{{ featured_manga.chapter_count }}</strong> 卷/话，<strong>{{ featured_manga.page_count }}</strong> 幅画格图像。
-        </p>
-        <div class="hero-action-bar">
-          <a class="btn-editorial-read" href="/manga/{{ featured_manga.id }}">
-            <span>✦ 进入画境品读</span>
-          </a>
-        </div>
-      </div>
     </div>
-  </div>
+  </section>
+  {% endif %}
 
-  <!-- 馆藏焦点：移动端横向滑动手势，桌面端垂直侧栏 (Spotlight Focus) -->
-  {% if spotlight_mangas %}
-  <div class="hero-spotlights">
-    <div class="spotlight-header">
-      <div class="spotlight-title-wrap">
-        <span class="spotlight-title">FOCUS · 本期焦点</span>
-        <span class="spotlight-hint-mobile">← 左右滑动探索 →</span>
+  <!-- 03. 本地离线继续品读 (IndexedDB Local Reading Continuation Area) -->
+  <section class="continue-reading-section" id="continue-reading" style="display: none;">
+    <div class="section-editorial-header">
+      <div class="header-title-group">
+        <span class="section-micro-tag font-mono">CONTINUE READING</span>
+        <h2 class="section-title font-serif">继续品读 · 本地设备记忆</h2>
       </div>
-      <span class="spotlight-stamp">№ 01-03</span>
+      <span class="section-counter-note font-mono">ANONYMOUS LOCAL MEMORY</span>
     </div>
-    <div class="spotlight-list">
+    <div class="continue-grid" id="continue-items-container">
+      <!-- 由客户端 IndexedDB 动态填充 -->
+    </div>
+  </section>
+
+  <!-- 04. 馆藏焦点与近期精选 (Curated Collections & Spotlights) -->
+  {% if not q and not source and page == 1 and spotlight_mangas %}
+  <section class="curated-spotlight-section">
+    <div class="section-editorial-header">
+      <div class="header-title-group">
+        <span class="section-micro-tag font-mono">SPOTLIGHT FOCUS</span>
+        <h2 class="section-title font-serif">馆藏焦点 · 本期精选</h2>
+      </div>
+      <span class="section-counter-note font-mono">№ 02–04 HIGHLIGHTS</span>
+    </div>
+
+    <div class="spotlight-triad-grid">
       {% for sp in spotlight_mangas %}
-      <a class="spotlight-card" href="/manga/{{ sp.id }}">
-        <div class="sp-thumb">
+      <a class="spotlight-triad-item" href="/manga/{{ sp.id }}">
+        <div class="spotlight-artwork-frame">
           <img loading="lazy" src="/thumb/{{ sp.id }}" alt="{{ sp.title }}">
+          <span class="spotlight-tag font-mono">{{ sp.source_name }}</span>
         </div>
-        <div class="sp-info">
-          <div class="sp-source-badge">{{ sp.source_name }}</div>
-          <div class="sp-title">{{ sp.title }}</div>
-          <div class="sp-meta">
-            <span>{{ sp.chapter_count }} 话/卷</span>
-            <span>·</span>
-            <span>{{ sp.page_count }}P</span>
+        <div class="spotlight-monograph-info">
+          <h3 class="spotlight-title font-serif" title="{{ sp.title }}">{{ sp.title }}</h3>
+          <div class="spotlight-meta font-mono">
+            <span>{{ sp.chapter_count }} CHAPTERS · {{ sp.page_count }} PAGES</span>
           </div>
         </div>
       </a>
       {% endfor %}
     </div>
-  </div>
+  </section>
   {% endif %}
-</section>
-{% endif %}
 
-<!-- 本地离线继续品读 (IndexedDB Local Reading Continuation Area) -->
-<section class="continue-reading-section" id="continue-reading" style="display: none;">
-  <div class="continue-header">
-    <div class="continue-title-group">
-      <span class="continue-dot"></span>
-      <span class="continue-title">CONTINUE READING · 继续品读</span>
-      <span class="continue-sub">本地设备记忆</span>
+  <!-- 05. 馆藏画卷检索与分类中枢 (SEARCH THE COLLECTION) -->
+  <section class="editorial-search-section" id="search-section">
+    <div class="search-editorial-header">
+      <div class="header-title-group">
+        <span class="section-micro-tag font-mono">SEARCH THE COLLECTION</span>
+        <h2 class="section-title font-serif">馆藏总览与画卷检索</h2>
+      </div>
+      <div class="archive-stat-stamp font-mono">
+        <span>TOTAL WORKS:</span>
+        <strong>{{ total_all|default(total) }}</strong>
+      </div>
     </div>
-  </div>
-  <div class="continue-grid" id="continue-items-container">
-    <!-- 由客户端 IndexedDB 动态填充 -->
-  </div>
-</section>
 
-<!-- 馆藏全集与分类检索中枢 (Manga Archive & Catalog Bar) -->
-<section class="catalog-control-panel" id="archive">
-  <div class="control-headline">
-    <div class="editorial-heading-wrap">
-      <span class="editorial-subhead">MANGA ARCHIVE</span>
-      <h2 class="editorial-section-title">馆藏总览与画卷检索</h2>
-    </div>
-    <div class="archive-stat-stamp">
-      <span>TOTAL WORKS</span>
-      <strong>{{ total_all|default(total) }}</strong>
-    </div>
-  </div>
-
-  <div class="catalog-bar">
-    <!-- 来源分类 Tab -->
-    <div class="source-tabs-wrap">
-      <div class="source-tabs">
-        <a href="/{% if q %}?q={{ q|urlencode }}{% endif %}#archive" class="tab {% if not source %}active{% endif %}">
-          <span class="tab-dot"></span>
-          <span>全部典藏</span>
+    <div class="search-action-strip">
+      <!-- 来源分类 Tab -->
+      <div class="source-filter-tabs font-mono">
+        <a href="/{% if q %}?q={{ q|urlencode }}{% endif %}#search-section" class="filter-tab {% if not source %}active{% endif %}">
+          <span>全部典藏 ALL</span>
           <span class="tab-count">{{ total_all|default(total) }}</span>
         </a>
         {% for s in sources %}
-        <a href="/?source={{ s.id }}{% if q %}&q={{ q|urlencode }}{% endif %}#archive" class="tab {% if source == s.id|string %}active{% endif %}">
-          <span class="tab-dot"></span>
+        <a href="/?source={{ s.id }}{% if q %}&q={{ q|urlencode }}{% endif %}#search-section" class="filter-tab {% if source == s.id|string %}active{% endif %}">
           <span>{{ s.name }}</span>
           <span class="tab-count">{{ s.manga_count }}</span>
         </a>
         {% endfor %}
       </div>
-    </div>
 
-    <!-- 紧凑检索胶囊 -->
-    <form class="search-form-unified" action="/" method="get">
-      {% if source %}
-      <input type="hidden" name="source" value="{{ source }}">
-      {% endif %}
-      <div class="search-capsule">
-        <svg class="search-ico" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="11" cy="11" r="8"></circle>
-          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-        </svg>
-        <input class="search-inp" type="text" name="q" value="{{ q }}" placeholder="检索漫画名或作者..." autocomplete="off">
-        {% if q %}
-        <a class="search-clear-link" href="/{% if source %}?source={{ source }}{% endif %}#archive" title="清空检索">✕</a>
+      <!-- 单行极简检索框 -->
+      <form class="editorial-search-bar font-mono" action="/#search-section" method="get">
+        {% if source %}
+        <input type="hidden" name="source" value="{{ source }}">
         {% endif %}
-        <button class="search-btn-pill" type="submit">检索</button>
-      </div>
-    </form>
-  </div>
-</section>
-
-<!-- 检索状态提示 -->
-{% if q or source %}
-<div class="filter-status-banner">
-  <div class="filter-status-text">
-    <span>检索结果：</span>
-    {% if q %}包含关键词 <strong>“{{ q }}”</strong>{% endif %}
-    {% if q and source %} · {% endif %}
-    {% if source %}限定子库分类 <strong>#{{ source }}</strong>{% endif %}
-    <span class="filter-result-count">（共 {{ total }} 部作品）</span>
-  </div>
-  <a class="filter-reset-link" href="/#archive">重置筛选</a>
-</div>
-{% endif %}
-
-<!-- 艺术画廊网格 (Curated Editorial Gallery Grid) -->
-<section class="gallery-container">
-  {% if mangas %}
-  <div class="editorial-grid">
-  {% for m in mangas %}
-    <a class="art-card {% if loop.index in [1, 8, 17, 24] %}art-card-highlight{% endif %}" href="/manga/{{ m.id }}">
-      <div class="art-card-inner">
-        <div class="art-thumb-wrap">
-          <img loading="lazy" src="/thumb/{{ m.id }}" alt="{{ m.title }}" onerror="this.onerror=null;this.src='/static/placeholder.svg';">
-          <div class="art-badge-row">
-            <span class="art-source-pill">{{ m.source_name }}</span>
-          </div>
-        </div>
-        <div class="art-card-content">
-          <h3 class="art-title" title="{{ m.title }}">{{ m.title }}</h3>
-          <div class="art-meta-row">
-            <span class="art-chapter-tag">
-              {% if m.chapter_count > 1 %}
-              {{ m.chapter_count }} 卷/话
-              {% else %}
-              全一话
-              {% endif %}
-            </span>
-            <span class="art-pages-count">{{ m.page_count }}P</span>
-          </div>
-        </div>
-      </div>
-    </a>
-  {% endfor %}
-  </div>
-
-  <!-- 触控优化典雅分页器 -->
-  {% if pages > 1 %}
-  <nav class="pagination-bar" aria-label="画廊翻页">
-    <div class="pagination-track">
-      {% if page > 1 %}
-      <a class="page-link prev-link" href="?page={{ page - 1 }}{% if q %}&q={{ q|urlencode }}{% endif %}{% if source %}&source={{ source }}{% endif %}#archive">
-        <span>‹ 上一页</span>
-      </a>
-      {% endif %}
-
-      <div class="page-numbers">
-        {% set start_page = [1, page - 2]|max %}
-        {% set end_page = [pages, page + 2]|min %}
-        
-        {% if start_page > 1 %}
-        <a class="page-num" href="?page=1{% if q %}&q={{ q|urlencode }}{% endif %}{% if source %}&source={{ source }}{% endif %}#archive">1</a>
-        {% if start_page > 2 %}<span class="page-ellipsis">…</span>{% endif %}
-        {% endif %}
-
-        {% for p in range(start_page, end_page + 1) %}
-          {% if p == page %}
-          <span class="page-num current">{{ p }}</span>
-          {% else %}
-          <a class="page-num" href="?page={{ p }}{% if q %}&q={{ q|urlencode }}{% endif %}{% if source %}&source={{ source }}{% endif %}#archive">{{ p }}</a>
+        <div class="search-input-wrap">
+          <span class="search-prefix-glyph">/</span>
+          <input class="search-native-input" type="text" name="q" value="{{ q }}" placeholder="Search manga titles, sources, volume numbers..." autocomplete="off">
+          {% if q %}
+          <a class="search-clear-btn" href="/{% if source %}?source={{ source }}{% endif %}#search-section" title="清空检索">✕</a>
           {% endif %}
-        {% endfor %}
-
-        {% if end_page < pages %}
-        {% if end_page < pages - 1 %}<span class="page-ellipsis">…</span>{% endif %}
-        <a class="page-num" href="?page={{ pages }}{% if q %}&q={{ q|urlencode }}{% endif %}{% if source %}&source={{ source }}{% endif %}#archive">{{ pages }}</a>
-        {% endif %}
-      </div>
-
-      {% if page < pages %}
-      <a class="page-link next-link" href="?page={{ page + 1 }}{% if q %}&q={{ q|urlencode }}{% endif %}{% if source %}&source={{ source }}{% endif %}#archive">
-        <span>下一页 ›</span>
-      </a>
-      {% endif %}
+          <button class="search-submit-btn" type="submit">SEARCH</button>
+        </div>
+      </form>
     </div>
-    <div class="pagination-meta">
-      第 <strong>{{ page }}</strong> / {{ pages }} 页 · 共 {{ total }} 部画册
-    </div>
-  </nav>
-  {% endif %}
+  </section>
 
-  {% else %}
-  <div class="empty-colophon">
-    <div class="colophon-mark">栞</div>
-    <h3 class="colophon-title">未探寻到相关画卷</h3>
-    <p class="colophon-text">未在当前分类或检索词下匹配到藏品。您可以尝试更换关键词，或进入管理员控制台重新索引。</p>
-    <a href="/#archive" class="btn-colophon-reset">返回完整藏馆</a>
+  <!-- 检索状态提示 -->
+  {% if q or source %}
+  <div class="filter-status-strip font-mono">
+    <div class="status-msg">
+      <span>检索结果：</span>
+      {% if q %}包含关键词 <strong>“{{ q }}”</strong>{% endif %}
+      {% if q and source %} · {% endif %}
+      {% if source %}限定来源 <strong>#{{ source }}</strong>{% endif %}
+      <span class="status-count">（共 {{ total }} 部藏品）</span>
+    </div>
+    <a class="status-reset-link" href="/#search-section">[ 重置检索 RESET ]</a>
   </div>
   {% endif %}
-</section>
+
+  <!-- 06. 艺术画廊网格 (Curated Editorial Gallery Grid) -->
+  <section class="manga-archive-grid-section">
+    {% if mangas %}
+    <div class="editorial-artwork-grid">
+    {% for m in mangas %}
+      <a class="artwork-card {% if loop.index in [1, 7, 14, 20] %}artwork-card-accent{% endif %}" href="/manga/{{ m.id }}">
+        <div class="artwork-mount">
+          <img loading="lazy" src="/thumb/{{ m.id }}" alt="{{ m.title }}" onerror="this.onerror=null;this.src='/static/placeholder.svg';">
+          <span class="artwork-source-badge font-mono">{{ m.source_name }}</span>
+        </div>
+        <div class="artwork-caption">
+          <h3 class="artwork-title font-serif" title="{{ m.title }}">{{ m.title }}</h3>
+          <div class="artwork-meta font-mono">
+            <span>{{ m.chapter_count }} CHAPTERS · {{ m.page_count }} PAGES</span>
+          </div>
+        </div>
+      </a>
+    {% endfor %}
+    </div>
+
+    <!-- 触控优化典雅分页器 -->
+    {% if pages > 1 %}
+    <nav class="pagination-bar font-mono" aria-label="画廊翻页">
+      <div class="pagination-track">
+        {% if page > 1 %}
+        <a class="page-link prev-link" href="?page={{ page - 1 }}{% if q %}&q={{ q|urlencode }}{% endif %}{% if source %}&source={{ source }}{% endif %}#search-section">
+          <span>‹ PREV</span>
+        </a>
+        {% endif %}
+
+        <div class="page-numbers">
+          {% set start_page = [1, page - 2]|max %}
+          {% set end_page = [pages, page + 2]|min %}
+          
+          {% if start_page > 1 %}
+          <a class="page-num" href="?page=1{% if q %}&q={{ q|urlencode }}{% endif %}{% if source %}&source={{ source }}{% endif %}#search-section">1</a>
+          {% if start_page > 2 %}<span class="page-ellipsis">…</span>{% endif %}
+          {% endif %}
+
+          {% for p in range(start_page, end_page + 1) %}
+            {% if p == page %}
+            <span class="page-num current">{{ p }}</span>
+            {% else %}
+            <a class="page-num" href="?page={{ p }}{% if q %}&q={{ q|urlencode }}{% endif %}{% if source %}&source={{ source }}{% endif %}#search-section">{{ p }}</a>
+            {% endif %}
+          {% endfor %}
+
+          {% if end_page < pages %}
+          {% if end_page < pages - 1 %}<span class="page-ellipsis">…</span>{% endif %}
+          <a class="page-num" href="?page={{ pages }}{% if q %}&q={{ q|urlencode }}{% endif %}{% if source %}&source={{ source }}{% endif %}#search-section">{{ pages }}</a>
+          {% endif %}
+        </div>
+
+        {% if page < pages %}
+        <a class="page-link next-link" href="?page={{ page + 1 }}{% if q %}&q={{ q|urlencode }}{% endif %}{% if source %}&source={{ source }}{% endif %}#search-section">
+          <span>NEXT ›</span>
+        </a>
+        {% endif %}
+      </div>
+      <div class="pagination-meta">
+        PAGE <strong>{{ page }}</strong> / {{ pages }} · TOTAL {{ total }} WORKS
+      </div>
+    </nav>
+    {% endif %}
+
+    {% else %}
+    <div class="empty-gallery-colophon">
+      <div class="colophon-mark font-serif">栞</div>
+      <h3 class="colophon-title font-serif">未探寻到相关画卷</h3>
+      <p class="colophon-text">未在当前分类或检索词下匹配到藏品。您可以尝试更换关键词，或重置筛选条件。</p>
+      <a href="/#search-section" class="btn-colophon-reset font-mono">返回完整藏馆 RESET</a>
+    </div>
+    {% endif %}
+  </section>
+</div>
 
 <!-- 客户端渲染本地阅读历史逻辑 -->
 <script>
@@ -271,25 +243,25 @@ document.addEventListener("DOMContentLoaded", async function() {
   if (historyList && historyList.length > 0) {
     section.style.display = "block";
     container.innerHTML = "";
-    // 最多展示前4个最近阅读项
+    // 展示前 4 个最近阅读项
     historyList.slice(0, 4).forEach(item => {
       const card = document.createElement("div");
-      card.className = "continue-card";
+      card.className = "continue-monograph-card";
       card.innerHTML = `
-        <a href="/read/${item.chapter_id}#page-${item.page_number || 1}" class="continue-card-thumb">
+        <a href="/read/${item.chapter_id}#page-${item.page_number || 1}" class="continue-card-artwork">
           <img src="/thumb/${item.manga_id}" alt="${item.manga_title || ''}" onerror="this.onerror=null;this.src='/static/placeholder.svg';">
         </a>
         <div class="continue-card-body">
-          <div class="continue-card-tag">上次品读至</div>
-          <a href="/manga/${item.manga_id}" class="continue-card-title" title="${item.manga_title || ''}">${item.manga_title || '未命名作品'}</a>
-          <div class="continue-card-meta">
-            <span>${item.chapter_title || '正篇'}</span> · <span>第 ${item.page_number || 1} 页</span>
+          <div class="continue-card-eyebrow font-mono">RESUME READING</div>
+          <a href="/manga/${item.manga_id}" class="continue-card-title font-serif" title="${item.manga_title || ''}">${item.manga_title || '未命名画册'}</a>
+          <div class="continue-card-meta font-mono">
+            <span>${item.chapter_title || '正篇'}</span> · <span>PAGE ${item.page_number || 1} / ${item.total_pages || '?'}</span>
           </div>
           <div class="continue-card-actions">
-            <a href="/read/${item.chapter_id}#page-${item.page_number || 1}" class="btn-continue-read">
-              <span>✦ 继续阅读</span>
+            <a href="/read/${item.chapter_id}#page-${item.page_number || 1}" class="btn-continue-read font-mono">
+              <span>✦ 继续阅读 RESUME</span>
             </a>
-            <button class="btn-continue-remove" onclick="event.preventDefault(); window.MangaArchive.removeProgress(${item.manga_id}).then(() => location.reload());" title="移除此项记录">✕</button>
+            <button class="btn-continue-remove font-mono" onclick="event.preventDefault(); window.MangaArchive.removeProgress(${item.manga_id}).then(() => location.reload());" title="移除此项记录">✕</button>
           </div>
         </div>
       `;

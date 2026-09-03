@@ -2,62 +2,67 @@
 {% block body_class %}reader-theme{% endblock %}
 {% block content %}
 
-<!-- 顶部超细阅读进度指示条 (赤陶到鼠尾草渐变) -->
-<div id="read-progress-bar" style="position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg, #c8684f, #d48748, #667d6c);width:0%;z-index:9999;transition:width 0.1s ease;"></div>
+<!-- 顶部超细阅读进度指示条 (赤陶渐变) -->
+<div id="read-progress-bar" style="position:fixed;top:0;left:0;height:2.5px;background:linear-gradient(90deg, #b85d43, #d48748, #3d565f);width:0%;z-index:9999;transition:width 0.1s ease;"></div>
 
 <!-- 极简半透明浮动阅读头部 (支持手势点击隐藏/显示) -->
 <div class="reader-head" id="reader-floating-head">
   <div class="reader-left">
-    <a href="/manga/{{ manga.id }}" class="reader-back" aria-label="返回目录">
+    <a href="/manga/{{ manga.id }}" class="reader-back font-mono" aria-label="返回目录">
       <span class="back-arrow">‹</span>
-      <span class="back-text">目录</span>
+      <span class="back-text">INDEX</span>
     </a>
-    <strong class="reader-title">{{ manga.title }}</strong>
-    <span class="reader-chapter-tag">{{ chapter.title }}</span>
+    <strong class="reader-title font-serif">{{ manga.title }}</strong>
+    <span class="reader-chapter-tag font-mono">{{ chapter.title }}</span>
   </div>
-  <div class="reader-right">
-    <span id="read-progress-text" class="reader-progress-badge">0% (1/{{ pages|length }})</span>
+  <div class="reader-right font-mono">
+    <span id="read-progress-text" class="reader-progress-badge">0% (1/{{ pages|length }}P)</span>
     <div class="reader-ch-controls">
       {% if prev_chapter %}
-      <a href="/read/{{ prev_chapter.id }}" class="ch-nav-btn" title="上一话: {{ prev_chapter.title }}">上一话</a>
+      <a href="/read/{{ prev_chapter.id }}" class="ch-nav-btn" title="上一话: {{ prev_chapter.title }}">‹ PREV</a>
       {% endif %}
       {% if next_chapter %}
-      <a href="/read/{{ next_chapter.id }}" class="ch-nav-btn ch-next-pill" title="下一话: {{ next_chapter.title }}">下一话</a>
+      <a href="/read/{{ next_chapter.id }}" class="ch-nav-btn ch-next-pill" title="下一话: {{ next_chapter.title }}">NEXT ›</a>
       {% endif %}
     </div>
   </div>
 </div>
 
-<!-- 移动端全贴边 / 居中无缝画格流 (Edge-to-Edge Stream) -->
+<!-- 移动端全贴边 / 桌面居中无缝画格流 (Progressive Loading Stream) -->
 <div class="reader-body">
   <div class="reader-page-stream" id="reader-stream">
     {% for p in pages %}
     <div class="reader-page-item" id="page-{{ p.page_number }}" data-page="{{ p.page_number }}">
-      <img loading="lazy" src="/media/{{ p.id }}" alt="第{{ p.page_number }}页" decoding="async">
+      <!-- 前 2 页直接加载保证首屏速度，后续页面通过 IntersectionObserver 渐进加载 -->
+      {% if loop.index <= 2 %}
+      <img src="/media/{{ p.id }}" alt="第{{ p.page_number }}页" decoding="async" class="reader-img-loaded">
+      {% else %}
+      <img data-src="/media/{{ p.id }}" alt="第{{ p.page_number }}页" decoding="async" class="reader-img-lazy">
+      {% endif %}
     </div>
     {% endfor %}
   </div>
 
   <!-- 底部典藏切换栏 (大触控靶心) -->
-  <div class="reader-bottom-nav">
+  <div class="reader-bottom-nav font-mono">
     {% if prev_chapter %}
     <a href="/read/{{ prev_chapter.id }}" class="btn-nav btn-nav-prev">
       <span class="btn-arrow">←</span>
-      <span>上一话：{{ prev_chapter.title }}</span>
+      <span>PREV CHAPTER / 上一话：{{ prev_chapter.title }}</span>
     </a>
     {% else %}
-    <span class="btn-nav disabled">已经是第一话</span>
+    <span class="btn-nav disabled">FIRST CHAPTER / 已经是第一话</span>
     {% endif %}
 
-    <a href="/manga/{{ manga.id }}" class="btn-nav btn-nav-index">返回画册目录</a>
+    <a href="/manga/{{ manga.id }}" class="btn-nav btn-nav-index">RETURN TO DIRECTORY / 返回画册目录</a>
 
     {% if next_chapter %}
     <a href="/read/{{ next_chapter.id }}" class="btn-nav primary btn-nav-next">
-      <span>下一话：{{ next_chapter.title }}</span>
+      <span>NEXT CHAPTER / 下一话：{{ next_chapter.title }}</span>
       <span class="btn-arrow">→</span>
     </a>
     {% else %}
-    <span class="btn-nav disabled">已经是最新话</span>
+    <span class="btn-nav disabled">LATEST CHAPTER / 已经是最新话</span>
     {% endif %}
   </div>
 </div>
@@ -75,7 +80,35 @@
   let saveTimer = null;
   let lastSavedPage = 1;
 
-  // 匿名会话统计上报
+  // 1. 高性能渐进式图片懒加载 (IntersectionObserver Windowing Buffer)
+  if ('IntersectionObserver' in window) {
+    const imgObserver = new IntersectionObserver((entries, observer) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const img = entry.target.querySelector('img[data-src]');
+          if (img) {
+            img.src = img.getAttribute('data-src');
+            img.removeAttribute('data-src');
+            img.classList.add('reader-img-loaded');
+            img.classList.remove('reader-img-lazy');
+          }
+          observer.unobserve(entry.target);
+        }
+      });
+    }, {
+      rootMargin: '1000px 0px', // 提前 1000px 预加载，滑动极致丝滑
+      threshold: 0.01
+    });
+
+    pages.forEach(p => imgObserver.observe(p));
+  } else {
+    // Fallback for older browsers
+    document.querySelectorAll('img[data-src]').forEach(img => {
+      img.src = img.getAttribute('data-src');
+    });
+  }
+
+  // 2. 匿名会话统计上报
   try {
     fetch('/api/analytics/ping', {
       method: 'POST',
@@ -89,7 +122,7 @@
     }).catch(() => {});
   } catch(e) {}
 
-  // 检查是否从指定页码锚点跳转而来
+  // 3. 检查是否从指定页码锚点跳转而来
   if (window.location.hash) {
     const target = document.querySelector(window.location.hash);
     if (target) {
@@ -117,7 +150,7 @@
       text.textContent = `${Math.round(pct)}% (${curPage}/${totalPages}P)`;
     }
 
-    // 本地阅读历史记录（防抖写入 IndexedDB）
+    // 本地阅读历史记录（防抖 500ms 写入 IndexedDB）
     if (curPage !== lastSavedPage) {
       lastSavedPage = curPage;
       clearTimeout(saveTimer);
@@ -135,9 +168,9 @@
       }, 500);
     }
 
-    // 移动端向下滚动轻微收起，向上滚动呼出
+    // 移动端向下滚动自动收起，向上滚动轻柔呼出
     if (window.innerWidth <= 768 && head) {
-      if (scrollY > lastScrollY && scrollY > 120) {
+      if (scrollY > lastScrollY && scrollY > 100) {
         head.classList.add('head-autohide');
       } else {
         head.classList.remove('head-autohide');
