@@ -1,76 +1,114 @@
 {% extends 'base.html' %}
 {% block content %}
-<div class="detail-container">
-  <!-- 极简文艺画刊式返回导航 (Subtle Artistic Editorial Back Navigation) -->
-  <nav class="artistic-back-nav-wrap" aria-label="返回画廊">
-    <a href="/#archive" class="artistic-back-link">
+<div class="detail-archive-monograph">
+  <!-- 动态封面环境色光晕 (Ambient Cover Color Field) -->
+  <div class="monograph-ambient-halo" id="ambient-halo"></div>
+
+  <!-- 01. 极简返回导航 (‹ COLLECTION) -->
+  <nav class="editorial-back-nav" aria-label="返回画廊">
+    <a href="/#archive" class="editorial-back-link font-mono">
       <span class="back-glyph">‹</span>
-      <span class="back-label">漫画馆 · MANGA ARCHIVE</span>
+      <span class="back-text">COLLECTION</span>
     </a>
   </nav>
 
-  <!-- 漫画展台 Hero (Exhibition Hero) -->
-  <div class="detail-hero">
-    <div class="detail-cover-wrap">
-      <img src="/thumb/{{ manga.id }}" alt="{{ manga.title }}" onerror="this.onerror=null;this.src='/static/placeholder.svg';">
+  <!-- 02. 精致紧凑的画册展台 Hero (Restrained Editorial Hero Composition) -->
+  <section class="monograph-hero">
+    <div class="monograph-artwork-mount">
+      <img id="detail-cover-img" src="/thumb/{{ manga.id }}" alt="{{ manga.title }}" crossorigin="anonymous" onerror="this.onerror=null;this.src='/static/placeholder.svg';">
     </div>
-    <div class="detail-info">
-      <div class="detail-source-badge">{{ manga.source_name }} 站点收录</div>
-      <h1 class="detail-title">{{ manga.title }}</h1>
-      <div class="detail-meta-row">
-        <span class="detail-meta-pill">共 {{ manga.chapter_count }} 卷/话</span>
-        <span class="detail-meta-pill">共 {{ manga.page_count }} 页画格</span>
+
+    <div class="monograph-lead-info">
+      <div class="monograph-source-tag font-mono">
+        <span>{{ manga.source_name }} · SOURCE</span>
       </div>
 
-      <!-- 本地阅读续读动态入口（由 IndexedDB 自动填充） -->
-      <div id="detail-resume-wrap" style="display: none;">
-        <div class="detail-resume-banner">
-          <div class="resume-meta">
-            <span class="resume-icon">✦</span>
-            <span class="resume-text">上次品读至：<strong id="resume-chapter-text">-</strong> · 第 <strong id="resume-page-text">-</strong> 页</span>
+      <h1 class="monograph-title font-serif">{{ manga.title }}</h1>
+
+      <div class="monograph-counts-strip font-mono">
+        <span>{{ manga.chapter_count }} CHAPTERS</span>
+        <span class="sep">·</span>
+        <span>{{ manga.page_count }} PAGES</span>
+      </div>
+
+      <!-- 本地阅读进度 (LAST READ - Editorial typography & hairline) -->
+      <div class="monograph-last-read" id="detail-resume-wrap" style="display: none;">
+        <div class="last-read-label font-mono">LAST READ</div>
+        <div class="last-read-divider"></div>
+        <div class="last-read-content">
+          <div class="last-read-chapter font-serif" id="resume-chapter-text">-</div>
+          <div class="last-read-progress font-mono">
+            <span id="resume-page-text">1</span> / <span id="resume-total-text">{{ manga.page_count }}</span> PAGES
           </div>
-          <a id="resume-btn" class="btn-resume-action" href="#">继续品读 ›</a>
         </div>
+        <a id="resume-btn" class="last-read-action font-mono" href="#">CONTINUE READING →</a>
       </div>
 
       {% if first_chapter_id %}
-      <div class="detail-actions">
-        <a class="btn-read-primary" href="/read/{{ first_chapter_id }}">
-          <span>✦ 开始品读首话</span>
+      <div class="monograph-start-action" id="start-reading-wrap">
+        <a class="btn-start-reading font-mono" href="/read/{{ first_chapter_id }}">
+          <span>START READING →</span>
         </a>
       </div>
       {% endif %}
     </div>
-  </div>
+  </section>
 
-  <!-- 章节典藏目录 (CHAPTER DIRECTORY) -->
-  <div class="chapters-section">
-    <div class="section-header">
-      <div class="section-title-group">
-        <span class="section-sub-tag">CHAPTER DIRECTORY</span>
-        <h2 class="section-title">章节典藏目录 ({{ chapters|length }})</h2>
+  <!-- 03. 档案目录 (CHAPTER DIRECTORY - Two-Column Archival List) -->
+  <section class="monograph-directory-section">
+    <div class="directory-editorial-head">
+      <div class="dir-title-stack">
+        <span class="dir-en-tag font-mono">CHAPTER DIRECTORY</span>
+        <h2 class="dir-cn-title font-serif">章节目录</h2>
       </div>
-      <span class="section-subtitle">轻触任意章节即可开启沉浸画卷</span>
+      <span class="dir-total-count font-serif">{{ chapters|length }}</span>
     </div>
 
-    <div class="chapter-grid">
+    <div class="directory-editorial-list font-mono">
       {% for ch in chapters %}
-      <a class="chapter-card" href="/read/{{ ch.id }}" id="chapter-item-{{ ch.id }}">
-        <div class="chapter-title">{{ ch.title }}</div>
-        <div class="chapter-meta">
-          {% if ch.volume %}<span class="ch-vol">{{ ch.volume }}</span> · {% endif %}
-          <span class="ch-pages">{{ ch.page_count }}P</span>
+      <a class="directory-editorial-row" href="/read/{{ ch.id }}" id="chapter-item-{{ ch.id }}">
+        <span class="dir-index-num font-serif">{% if loop.index < 10 %}0{{ loop.index }}{% else %}{{ loop.index }}{% endif %}</span>
+        <div class="dir-item-content">
+          <div class="dir-chapter-title font-serif">{{ ch.title }}</div>
+          <div class="dir-chapter-meta font-mono">
+            {% if ch.volume %}<span class="dir-vol-label">{{ ch.volume }}</span> · {% endif %}
+            <span>{{ ch.page_count }} PAGES</span>
+          </div>
         </div>
+        <span class="dir-hover-arrow">→</span>
       </a>
       {% else %}
-      <div class="empty-archive">本作品暂无收录章节</div>
+      <div class="empty-directory font-mono">本作品暂无收录章节</div>
       {% endfor %}
     </div>
-  </div>
+  </section>
 </div>
 
 <script>
 document.addEventListener("DOMContentLoaded", async function() {
+  // 1. 提取封面主色渲染极低透明度柔和环境光晕
+  const img = document.getElementById('detail-cover-img');
+  const halo = document.getElementById('ambient-halo');
+  if (img && halo) {
+    const applyHalo = () => {
+      try {
+        const canvas = document.createElement('canvas');
+        canvas.width = 10;
+        canvas.height = 10;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, 10, 10);
+        const p1 = ctx.getImageData(2, 2, 1, 1).data;
+        const p2 = ctx.getImageData(7, 7, 1, 1).data;
+        halo.style.background = `radial-gradient(circle at 35% 25%, rgba(${p1[0]}, ${p1[1]}, ${p1[2]}, 0.15) 0%, rgba(${p2[0]}, ${p2[1]}, ${p2[2]}, 0.08) 45%, transparent 75%)`;
+      } catch (e) {
+        halo.style.background = `radial-gradient(circle at 35% 25%, rgba(200, 104, 79, 0.09) 0%, rgba(65, 90, 99, 0.06) 45%, transparent 75%)`;
+      }
+    };
+    if (img.complete) applyHalo();
+    else img.addEventListener('load', applyHalo);
+  }
+
+  // 2. 本地阅读历史读取与恢复
   if (!window.MangaArchive) return;
   const mangaId = {{ manga.id }};
   const list = await window.MangaArchive.getAllHistory();
@@ -79,12 +117,14 @@ document.addEventListener("DOMContentLoaded", async function() {
     const resumeWrap = document.getElementById("detail-resume-wrap");
     const chapText = document.getElementById("resume-chapter-text");
     const pageText = document.getElementById("resume-page-text");
+    const totalText = document.getElementById("resume-total-text");
     const btn = document.getElementById("resume-btn");
     if (resumeWrap && btn) {
       chapText.textContent = current.chapter_title || "正篇";
       pageText.textContent = current.page_number || 1;
+      if (current.total_pages) totalText.textContent = current.total_pages;
       btn.href = `/read/${current.chapter_id}#page-${current.page_number || 1}`;
-      resumeWrap.style.display = "block";
+      resumeWrap.style.display = "flex";
     }
   }
 });
