@@ -37,21 +37,21 @@
 
   {% block topbar_nav %}
   <nav class="topbar-nav font-mono">
-    <a class="nav-link" href="/">
-      <span>探索 EXPLORE</span>
+    <a class="nav-link nav-link-explore" href="/">
+      <span>探索</span><span class="nav-sub">EXPLORE</span>
     </a>
-    <a class="nav-link" href="/#archive">
-      <span>书架 COLLECTION</span>
+    <a class="nav-link nav-link-archive" href="/#search-section">
+      <span>书架</span><span class="nav-sub">COLLECTION</span>
     </a>
     <a class="nav-link nav-history-link" href="/#continue-reading" id="nav-history-item" style="display:none;">
-      <span>继续品读 READING</span>
+      <span>品读</span><span class="nav-sub">READING</span>
       <span class="nav-history-badge" id="nav-history-count">0</span>
     </a>
     <a class="nav-link nav-search-trigger" href="/#search-section">
-      <span>检索 SEARCH</span>
+      <span>检索</span><span class="nav-sub">SEARCH</span>
     </a>
     <a class="nav-link admin-pill" href="/admin" title="进入典藏管理控制台">
-      <span>控制中枢</span>
+      <span>控制台</span>
     </a>
   </nav>
   {% endblock %}
