@@ -368,9 +368,13 @@ body {
 }
 
 .hero-cover-frame img {
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: center top;
   display: block;
 }
 
@@ -564,6 +568,8 @@ body {
 .sp-thumb {
   width: 50px;
   aspect-ratio: 2/3;
+  height: 75px;
+  position: relative;
   border-radius: 6px;
   overflow: hidden;
   background: #e6dfd3;
@@ -571,9 +577,13 @@ body {
 }
 
 .sp-thumb img {
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: center top;
   display: block;
 }
 
@@ -876,6 +886,7 @@ body {
   display: flex;
   flex-direction: column;
   height: 100%;
+  justify-content: flex-start;
 }
 
 .art-card-highlight .art-card-inner {
@@ -890,12 +901,17 @@ body {
   border-radius: var(--radius-sm);
   overflow: hidden;
   background: #e4dcce;
+  flex: 0 0 auto;
 }
 
 .art-thumb-wrap img {
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: center top;
   display: block;
 }
 
@@ -929,11 +945,13 @@ body {
   font-weight: 600;
   color: var(--text-main);
   line-height: 1.4;
+  height: 2.8em;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
   margin-bottom: 6px;
+  word-break: break-word;
 }
 
 .art-meta-row {
@@ -1155,17 +1173,23 @@ body {
   width: 170px;
   margin: 0 auto;
   aspect-ratio: 2/3;
+  position: relative;
   border-radius: var(--radius-md);
   overflow: hidden;
   box-shadow: var(--shadow-md);
   border: 1px solid var(--border-medium);
   background: #e6dfd3;
+  flex-shrink: 0;
 }
 
 .detail-cover-wrap img {
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: center top;
   display: block;
 }
 

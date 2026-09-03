@@ -9,7 +9,7 @@ from fastapi.responses import HTMLResponse, RedirectResponse, FileResponse, JSON
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from starlette.middleware.gzip import GZipMiddleware
-from PIL import Image
+from PIL import Image, ImageOps
 
 from .config import load_config, save_config
 from .db import connect, init_db
@@ -235,10 +235,12 @@ def thumb(manga_id: int):
             if img_path.is_file():
                 THUMB_DIR.mkdir(parents=True, exist_ok=True)
                 with Image.open(img_path) as im:
-                    im.thumbnail((int(load_config().get("thumb_width", 360)), 700))
                     if im.mode not in ("RGB", "RGBA"):
                         im = im.convert("RGB")
-                    im.save(path, "WEBP", quality=80, method=4)
+                    thumb_w = int(load_config().get("thumb_width", 320))
+                    thumb_h = int(thumb_w * 1.5)  # 严格 2:3 黄金比例
+                    im_fitted = ImageOps.fit(im, (thumb_w, thumb_h), method=Image.Resampling.LANCZOS, centering=(0.5, 0.3))
+                    im_fitted.save(path, "WEBP", quality=82, method=4)
                 return FileResponse(path, media_type="image/webp", headers={"Cache-Control": "public, max-age=31536000, immutable"})
         except Exception:
             pass
