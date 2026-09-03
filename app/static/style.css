@@ -704,52 +704,59 @@ body {
   color: var(--accent-terra);
 }
 
-/* 05. Curated Spotlight Triad Grid */
+/* 05. Curated Spotlight Ribbon (Compact & Refined) */
 .curated-spotlight-section {
-  margin-bottom: 48px;
-  padding-bottom: 36px;
+  margin-bottom: 40px;
+  padding-bottom: 28px;
   border-bottom: 1px solid var(--border-subtle);
 }
 
-.spotlight-triad-grid {
+.spotlight-ribbon-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 24px;
+  gap: 16px;
 }
 
-@media (max-width: 768px) {
-  .spotlight-triad-grid {
+@media (max-width: 860px) {
+  .spotlight-ribbon-grid {
     grid-template-columns: 1fr;
-    gap: 18px;
+    gap: 10px;
   }
 }
 
-.spotlight-triad-item {
+.spotlight-ribbon-card {
   display: flex;
-  flex-direction: column;
-  gap: 10px;
+  align-items: center;
+  gap: 12px;
+  background: rgba(253, 251, 247, 0.6);
+  border: 1px solid var(--border-subtle);
+  border-radius: 2px;
+  padding: 8px 10px;
   text-decoration: none;
   color: inherit;
+  transition: all 0.2s ease;
 }
 
-.spotlight-artwork-frame {
-  position: relative;
+.spotlight-ribbon-card:hover {
+  background: #ffffff;
+  border-color: var(--border-medium);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(43, 36, 30, 0.05);
+}
+
+.spotlight-ribbon-thumb {
+  width: 52px;
   aspect-ratio: 2 / 3;
-  width: 100%;
+  height: 78px;
+  position: relative;
   border-radius: 2px;
   overflow: hidden;
   background: var(--color-sand);
-  border: 1px solid var(--border-medium);
-  box-shadow: 0 6px 18px rgba(43, 36, 30, 0.08);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  border: 1px solid var(--border-subtle);
+  flex-shrink: 0;
 }
 
-.spotlight-triad-item:hover .spotlight-artwork-frame {
-  transform: translateY(-3px);
-  box-shadow: 0 10px 24px rgba(43, 36, 30, 0.14);
-}
-
-.spotlight-artwork-frame img {
+.spotlight-ribbon-thumb img {
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -757,41 +764,50 @@ body {
   display: block;
 }
 
-.spotlight-tag {
-  position: absolute;
-  top: 6px;
-  left: 6px;
-  background: rgba(43, 36, 30, 0.85);
-  color: #f7f3ec;
-  font-size: 8.5px;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  padding: 1px 5px;
-  border-radius: 2px;
-  backdrop-filter: blur(4px);
-}
-
-.spotlight-monograph-info {
+.spotlight-ribbon-body {
+  flex: 1;
+  min-width: 0;
   display: flex;
   flex-direction: column;
   gap: 3px;
 }
 
-.spotlight-title {
-  font-size: 14px;
+.spotlight-ribbon-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.spotlight-num {
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--accent-terra);
+}
+
+.spotlight-src-tag {
+  font-size: 9.5px;
+  color: var(--text-muted);
+  background: var(--color-warm-parchment);
+  padding: 1px 4px;
+  border-radius: 2px;
+}
+
+.spotlight-ribbon-title {
+  font-size: 13px;
   font-weight: 700;
   color: var(--text-main);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  line-height: 1.3;
 }
 
-.spotlight-triad-item:hover .spotlight-title {
+.spotlight-ribbon-card:hover .spotlight-ribbon-title {
   color: var(--accent-terra);
 }
 
-.spotlight-meta {
-  font-size: 11px;
+.spotlight-ribbon-meta {
+  font-size: 10.5px;
   color: var(--text-muted);
 }
 

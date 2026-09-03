@@ -66,28 +66,31 @@
     </div>
   </section>
 
-  <!-- 04. 馆藏焦点与近期精选 (Curated Collections & Spotlights) -->
+  <!-- 04. 馆藏焦点与近期精选 (Curated Collections & Spotlights - Compact Editorial Ribbon) -->
   {% if not q and not source and page == 1 and spotlight_mangas %}
   <section class="curated-spotlight-section">
     <div class="section-editorial-header">
       <div class="header-title-group">
-        <span class="section-micro-tag font-mono">SPOTLIGHT FOCUS</span>
+        <span class="section-micro-tag font-mono">SPOTLIGHT ARCHIVE</span>
         <h2 class="section-title font-serif">馆藏焦点 · 本期精选</h2>
       </div>
-      <span class="section-counter-note font-mono">№ 02–04 HIGHLIGHTS</span>
+      <span class="section-counter-note font-mono">№ 02–04 CURATED SELECTION</span>
     </div>
 
-    <div class="spotlight-triad-grid">
+    <div class="spotlight-ribbon-grid">
       {% for sp in spotlight_mangas %}
-      <a class="spotlight-triad-item" href="/manga/{{ sp.id }}">
-        <div class="spotlight-artwork-frame">
+      <a class="spotlight-ribbon-card" href="/manga/{{ sp.id }}">
+        <div class="spotlight-ribbon-thumb">
           <img loading="lazy" src="/thumb/{{ sp.id }}" alt="{{ sp.title }}">
-          <span class="spotlight-tag font-mono">{{ sp.source_name }}</span>
         </div>
-        <div class="spotlight-monograph-info">
-          <h3 class="spotlight-title font-serif" title="{{ sp.title }}">{{ sp.title }}</h3>
-          <div class="spotlight-meta font-mono">
-            <span>{{ sp.chapter_count }} CHAPTERS · {{ sp.page_count }} PAGES</span>
+        <div class="spotlight-ribbon-body">
+          <div class="spotlight-ribbon-eyebrow font-mono">
+            <span class="spotlight-num font-serif">№ 0{{ loop.index + 1 }}</span>
+            <span class="spotlight-src-tag">{{ sp.source_name }}</span>
+          </div>
+          <h3 class="spotlight-ribbon-title font-serif" title="{{ sp.title }}">{{ sp.title }}</h3>
+          <div class="spotlight-ribbon-meta font-mono">
+            <span>{{ sp.chapter_count }} 话/卷</span> · <span>{{ sp.page_count }}P</span>
           </div>
         </div>
       </a>
