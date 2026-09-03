@@ -290,8 +290,11 @@ def thumb(manga_id: int):
     if row and row["cover_rel_path"]:
         root = get_library_root()
         site_path = root if row["source_rel"] == "." else root / row["source_rel"]
-        manga_path = site_path / row["manga_rel"]
-        img_path = (manga_path / row["cover_rel_path"]).resolve()
+        
+        # 兼容 Type A / B 层级路径与 Type C 单级多话相对路径
+        p1 = (site_path / row["manga_rel"] / row["cover_rel_path"]).resolve()
+        p2 = (site_path / row["cover_rel_path"]).resolve()
+        img_path = p1 if p1.is_file() else p2
 
         try:
             img_path.relative_to(root)
@@ -330,8 +333,11 @@ def media(page_id: int):
 
     root = get_library_root()
     site_path = root if row["source_rel"] == "." else root / row["source_rel"]
-    manga_path = site_path / row["manga_rel"]
-    file_path = (manga_path / row["page_rel"]).resolve()
+    
+    # 兼容 Type A / B 层级路径与 Type C 单级多话相对路径
+    p1 = (site_path / row["manga_rel"] / row["page_rel"]).resolve()
+    p2 = (site_path / row["page_rel"]).resolve()
+    file_path = p1 if p1.is_file() else p2
 
     try:
         file_path.relative_to(root)
