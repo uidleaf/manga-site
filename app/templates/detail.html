@@ -1,92 +1,72 @@
 {% extends 'base.html' %}
 {% block content %}
-<div class="manga-detail-room">
-  <!-- 01. 极简返回导航 (Editorial Return Link) -->
-  <nav class="detail-return-bar" aria-label="返回画廊">
-    <a href="/#search-section" class="detail-back-link font-mono">
+<div class="detail-container">
+  <!-- 极简文艺画刊式返回导航 (Subtle Artistic Editorial Back Navigation) -->
+  <nav class="artistic-back-nav-wrap" aria-label="返回画廊">
+    <a href="/#archive" class="artistic-back-link">
       <span class="back-glyph">‹</span>
-      <span>COLLECTION / 返回典藏画廊</span>
+      <span class="back-label">漫画馆 · MANGA ARCHIVE</span>
     </a>
   </nav>
 
-  <!-- 02. 漫画展览展台 (Exhibition Monograph Showcase) -->
-  <section class="detail-monograph-hero">
-    <div class="detail-artwork-frame">
+  <!-- 漫画展台 Hero (Exhibition Hero) -->
+  <div class="detail-hero">
+    <div class="detail-cover-wrap">
       <img src="/thumb/{{ manga.id }}" alt="{{ manga.title }}" onerror="this.onerror=null;this.src='/static/placeholder.svg';">
-      <span class="detail-artwork-stamp font-mono">{{ manga.source_name }}</span>
     </div>
-
-    <div class="detail-monograph-text">
-      <div class="detail-source-strip font-mono">
-        <span class="strip-dot"></span>
-        <span>收录于站点「{{ manga.source_name }}」</span>
-        <span class="strip-sep">/</span>
-        <span>INDEXED ARCHIVE</span>
-      </div>
-
-      <h1 class="detail-monograph-title font-serif">{{ manga.title }}</h1>
-
-      <div class="detail-metadata-strip font-mono">
-        <div class="meta-data-node">
-          <span class="node-label">CHAPTERS</span>
-          <span class="node-val">{{ manga.chapter_count }} 卷/话</span>
-        </div>
-        <div class="meta-data-node">
-          <span class="node-label">IMAGES</span>
-          <span class="node-val">{{ manga.page_count }}P 画格</span>
-        </div>
-        <div class="meta-data-node">
-          <span class="node-label">STORAGE STATUS</span>
-          <span class="node-val">READ-ONLY ARCHIVE</span>
-        </div>
+    <div class="detail-info">
+      <div class="detail-source-badge">{{ manga.source_name }} 站点收录</div>
+      <h1 class="detail-title">{{ manga.title }}</h1>
+      <div class="detail-meta-row">
+        <span class="detail-meta-pill">共 {{ manga.chapter_count }} 卷/话</span>
+        <span class="detail-meta-pill">共 {{ manga.page_count }} 页画格</span>
       </div>
 
       <!-- 本地阅读续读动态入口（由 IndexedDB 自动填充） -->
       <div id="detail-resume-wrap" style="display: none;">
-        <div class="detail-resume-banner font-mono">
+        <div class="detail-resume-banner">
           <div class="resume-meta">
             <span class="resume-icon">✦</span>
             <span class="resume-text">上次品读至：<strong id="resume-chapter-text">-</strong> · 第 <strong id="resume-page-text">-</strong> 页</span>
           </div>
-          <a id="resume-btn" class="btn-resume-action" href="#">继续品读 RESUME ›</a>
+          <a id="resume-btn" class="btn-resume-action" href="#">继续品读 ›</a>
         </div>
       </div>
 
       {% if first_chapter_id %}
-      <div class="detail-actions-bar font-mono">
-        <a class="btn-detail-start-read" href="/read/{{ first_chapter_id }}">
-          <span>✦ 开始品读首话 START READING</span>
+      <div class="detail-actions">
+        <a class="btn-read-primary" href="/read/{{ first_chapter_id }}">
+          <span>✦ 开始品读首话</span>
         </a>
       </div>
       {% endif %}
     </div>
-  </section>
+  </div>
 
-  <!-- 03. 章节典藏目录 (CHAPTER DIRECTORY - Archive Index Layout) -->
-  <section class="chapter-archive-directory">
-    <div class="directory-header-strip">
-      <div class="directory-title-group">
-        <span class="section-micro-tag font-mono">CHAPTER DIRECTORY</span>
-        <h2 class="directory-heading font-serif">章节分卷编目索引 ({{ chapters|length }})</h2>
+  <!-- 章节典藏目录 (CHAPTER DIRECTORY) -->
+  <div class="chapters-section">
+    <div class="section-header">
+      <div class="section-title-group">
+        <span class="section-sub-tag">CHAPTER DIRECTORY</span>
+        <h2 class="section-title">章节典藏目录 ({{ chapters|length }})</h2>
       </div>
-      <span class="directory-note font-mono">ARCHIVAL INDEX</span>
+      <span class="section-subtitle">轻触任意章节即可开启沉浸画卷</span>
     </div>
 
-    <div class="chapter-index-grid font-mono">
+    <div class="chapter-grid">
       {% for ch in chapters %}
-      <a class="chapter-index-row" href="/read/{{ ch.id }}" id="chapter-item-{{ ch.id }}">
-        <span class="ch-order-num font-serif">{% if loop.index < 10 %}0{{ loop.index }}{% else %}{{ loop.index }}{% endif %}</span>
-        <div class="ch-info-col">
-          <strong class="ch-name font-serif">{{ ch.title }}</strong>
-          {% if ch.volume %}<span class="ch-vol-tag">{{ ch.volume }}</span>{% endif %}
+      <a class="chapter-card" href="/read/{{ ch.id }}" id="chapter-item-{{ ch.id }}">
+        <div class="chapter-title">{{ ch.title }}</div>
+        <div class="chapter-meta">
+          {% if ch.volume %}<span class="ch-vol">{{ ch.volume }}</span> · {% endif %}
+          <span class="ch-pages">{{ ch.page_count }}P</span>
         </div>
-        <span class="ch-page-badge">{{ ch.page_count }}P</span>
       </a>
       {% else %}
-      <div class="empty-directory-cell font-mono">本作品暂无收录章节</div>
+      <div class="empty-archive">本作品暂无收录章节</div>
       {% endfor %}
     </div>
-  </section>
+  </div>
 </div>
 
 <script>
