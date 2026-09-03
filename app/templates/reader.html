@@ -9,7 +9,7 @@
 <div class="reader-head" id="reader-floating-head">
   <div class="reader-left">
     <a href="/manga/{{ manga.id }}" class="reader-back" aria-label="返回目录">
-      <span class="back-arrow">←</span>
+      <span class="back-arrow">‹</span>
       <span class="back-text">目录</span>
     </a>
     <strong class="reader-title">{{ manga.title }}</strong>
@@ -32,7 +32,7 @@
 <div class="reader-body">
   <div class="reader-page-stream" id="reader-stream">
     {% for p in pages %}
-    <div class="reader-page-item" id="p{{ p.page_number }}" data-page="{{ p.page_number }}">
+    <div class="reader-page-item" id="page-{{ p.page_number }}" data-page="{{ p.page_number }}">
       <img loading="lazy" src="/media/{{ p.id }}" alt="第{{ p.page_number }}页" decoding="async">
     </div>
     {% endfor %}
@@ -49,7 +49,7 @@
     <span class="btn-nav disabled">已经是第一话</span>
     {% endif %}
 
-    <a href="/manga/{{ manga.id }}" class="btn-nav btn-nav-index">返回漫画目录</a>
+    <a href="/manga/{{ manga.id }}" class="btn-nav btn-nav-index">返回画册目录</a>
 
     {% if next_chapter %}
     <a href="/read/{{ next_chapter.id }}" class="btn-nav primary btn-nav-next">
@@ -72,6 +72,30 @@
 
   let lastScrollY = window.scrollY;
   let ticking = false;
+  let saveTimer = null;
+  let lastSavedPage = 1;
+
+  // 匿名会话统计上报
+  try {
+    fetch('/api/analytics/ping', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        event_type: 'chapter_open',
+        manga_id: {{ manga.id }},
+        chapter_id: {{ chapter.id }},
+        device_hash: window.MangaArchive ? window.MangaArchive.getDeviceHash() : ''
+      })
+    }).catch(() => {});
+  } catch(e) {}
+
+  // 检查是否从指定页码锚点跳转而来
+  if (window.location.hash) {
+    const target = document.querySelector(window.location.hash);
+    if (target) {
+      setTimeout(() => target.scrollIntoView({ behavior: 'smooth' }), 200);
+    }
+  }
 
   function updateProgress() {
     const scrollY = window.scrollY || window.pageYOffset;
@@ -91,6 +115,24 @@
 
     if (text) {
       text.textContent = `${Math.round(pct)}% (${curPage}/${totalPages}P)`;
+    }
+
+    // 本地阅读历史记录（防抖写入 IndexedDB）
+    if (curPage !== lastSavedPage) {
+      lastSavedPage = curPage;
+      clearTimeout(saveTimer);
+      saveTimer = setTimeout(() => {
+        if (window.MangaArchive) {
+          window.MangaArchive.saveProgress({
+            manga_id: {{ manga.id }},
+            manga_title: {{ manga.title|tojson }},
+            chapter_id: {{ chapter.id }},
+            chapter_title: {{ chapter.title|tojson }},
+            page_number: parseInt(curPage, 10),
+            total_pages: totalPages
+          });
+        }
+      }, 500);
     }
 
     // 移动端向下滚动轻微收起，向上滚动呼出

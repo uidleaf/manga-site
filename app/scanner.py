@@ -64,7 +64,17 @@ class ScanManager:
         self.stop_event.set()
 
     def get_progress(self) -> dict:
-        return dict(self.progress)
+        p = dict(self.progress)
+        p["paused"] = getattr(self, "paused", False)
+        return p
+
+    def pause(self) -> None:
+        self.paused = True
+        self.progress["message"] = "已暂停扫描"
+
+    def resume(self) -> None:
+        self.paused = False
+        self.progress["message"] = "恢复扫描中"
 
     def enqueue_full_scan(self) -> None:
         self.queue.put(("full", None))
@@ -75,6 +85,8 @@ class ScanManager:
     def _poller(self) -> None:
         while not self.stop_event.is_set():
             time.sleep(20)
+            if getattr(self, "paused", False):
+                continue
             cfg = load_config()
             root_str = cfg.get("library_root", "")
             if not root_str:
@@ -93,6 +105,9 @@ class ScanManager:
 
     def _worker(self) -> None:
         while not self.stop_event.is_set():
+            if getattr(self, "paused", False):
+                time.sleep(0.5)
+                continue
             try:
                 kind, sid = self.queue.get(timeout=0.5)
             except Empty:

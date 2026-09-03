@@ -2,51 +2,91 @@
 {% block content %}
 <div class="detail-container">
   <!-- 极简文艺画刊式返回导航 (Subtle Artistic Editorial Back Navigation) -->
-  <nav class="artistic-back-nav-wrap" aria-label="返回导航">
-    <a href="/" class="artistic-back-link">
+  <nav class="artistic-back-nav-wrap" aria-label="返回画廊">
+    <a href="/#archive" class="artistic-back-link">
       <span class="back-glyph">‹</span>
-      <span class="back-label">漫画馆</span>
+      <span class="back-label">漫画馆 · MANGA ARCHIVE</span>
     </a>
   </nav>
 
-  <!-- 漫画详情 Hero (移动端纵向堆叠，桌面端横向展示) -->
+  <!-- 漫画展台 Hero (Exhibition Hero) -->
   <div class="detail-hero">
     <div class="detail-cover-wrap">
-      <img src="/thumb/{{ manga.id }}" alt="{{ manga.title }}">
+      <img src="/thumb/{{ manga.id }}" alt="{{ manga.title }}" onerror="this.onerror=null;this.src='/static/placeholder.svg';">
     </div>
     <div class="detail-info">
-      <div class="detail-source-badge">{{ manga.source_name }} 来源</div>
+      <div class="detail-source-badge">{{ manga.source_name }} 站点收录</div>
       <h1 class="detail-title">{{ manga.title }}</h1>
       <div class="detail-meta-row">
-        <span class="detail-meta-pill">共 {{ manga.chapter_count }} 话/卷</span>
+        <span class="detail-meta-pill">共 {{ manga.chapter_count }} 卷/话</span>
         <span class="detail-meta-pill">共 {{ manga.page_count }} 页画格</span>
       </div>
+
+      <!-- 本地阅读续读动态入口（由 IndexedDB 自动填充） -->
+      <div id="detail-resume-wrap" style="display: none;">
+        <div class="detail-resume-banner">
+          <div class="resume-meta">
+            <span class="resume-icon">✦</span>
+            <span class="resume-text">上次品读至：<strong id="resume-chapter-text">-</strong> · 第 <strong id="resume-page-text">-</strong> 页</span>
+          </div>
+          <a id="resume-btn" class="btn-resume-action" href="#">继续品读 ›</a>
+        </div>
+      </div>
+
       {% if first_chapter_id %}
       <div class="detail-actions">
         <a class="btn-read-primary" href="/read/{{ first_chapter_id }}">
-          <span>📖 开始阅读首话</span>
+          <span>✦ 开始品读首话</span>
         </a>
       </div>
       {% endif %}
     </div>
   </div>
 
-  <!-- 章节列表 -->
+  <!-- 章节典藏目录 (CHAPTER DIRECTORY) -->
   <div class="chapters-section">
     <div class="section-header">
-      <h2 class="section-title">章节典藏目录 ({{ chapters|length }})</h2>
-      <span class="section-subtitle">点击任一章节开启阅读</span>
+      <div class="section-title-group">
+        <span class="section-sub-tag">CHAPTER DIRECTORY</span>
+        <h2 class="section-title">章节典藏目录 ({{ chapters|length }})</h2>
+      </div>
+      <span class="section-subtitle">轻触任意章节即可开启沉浸画卷</span>
     </div>
+
     <div class="chapter-grid">
       {% for ch in chapters %}
-      <a class="chapter-card" href="/read/{{ ch.id }}">
+      <a class="chapter-card" href="/read/{{ ch.id }}" id="chapter-item-{{ ch.id }}">
         <div class="chapter-title">{{ ch.title }}</div>
-        <div class="chapter-meta">{{ ch.page_count }}P</div>
+        <div class="chapter-meta">
+          {% if ch.volume %}<span class="ch-vol">{{ ch.volume }}</span> · {% endif %}
+          <span class="ch-pages">{{ ch.page_count }}P</span>
+        </div>
       </a>
       {% else %}
-      <div class="empty-archive">暂无章节数据</div>
+      <div class="empty-archive">本作品暂无收录章节</div>
       {% endfor %}
     </div>
   </div>
 </div>
+
+<script>
+document.addEventListener("DOMContentLoaded", async function() {
+  if (!window.MangaArchive) return;
+  const mangaId = {{ manga.id }};
+  const list = await window.MangaArchive.getAllHistory();
+  const current = list.find(x => x.manga_id === mangaId);
+  if (current) {
+    const resumeWrap = document.getElementById("detail-resume-wrap");
+    const chapText = document.getElementById("resume-chapter-text");
+    const pageText = document.getElementById("resume-page-text");
+    const btn = document.getElementById("resume-btn");
+    if (resumeWrap && btn) {
+      chapText.textContent = current.chapter_title || "正篇";
+      pageText.textContent = current.page_number || 1;
+      btn.href = `/read/${current.chapter_id}#page-${current.page_number || 1}`;
+      resumeWrap.style.display = "block";
+    }
+  }
+});
+</script>
 {% endblock %}

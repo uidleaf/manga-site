@@ -79,6 +79,27 @@ CREATE TABLE IF NOT EXISTS scan_jobs (
     started_at TEXT,
     finished_at TEXT
 );
+
+CREATE TABLE IF NOT EXISTS analytics_events (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    event_type TEXT NOT NULL,
+    manga_id INTEGER,
+    chapter_id INTEGER,
+    device_hash TEXT,
+    created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+CREATE INDEX IF NOT EXISTS idx_analytics_type_date ON analytics_events(event_type, created_at);
+CREATE INDEX IF NOT EXISTS idx_analytics_manga ON analytics_events(manga_id);
+
+CREATE TABLE IF NOT EXISTS analytics_daily (
+    date TEXT PRIMARY KEY,
+    manga_count INTEGER DEFAULT 0,
+    chapter_count INTEGER DEFAULT 0,
+    image_count INTEGER DEFAULT 0,
+    storage_bytes INTEGER DEFAULT 0,
+    reading_sessions INTEGER DEFAULT 0,
+    active_devices INTEGER DEFAULT 0
+);
 """
 
 
@@ -97,6 +118,9 @@ def init_db() -> None:
     con = connect()
     try:
         con.executescript(SCHEMA)
+        cols = [r["name"] for r in con.execute("PRAGMA table_info(sources)").fetchall()]
+        if "parsing_rule" not in cols:
+            con.execute("ALTER TABLE sources ADD COLUMN parsing_rule TEXT")
         con.commit()
     finally:
         con.close()
