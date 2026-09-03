@@ -1,0 +1,181 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="admin-head">
+  <div>
+    <h1>⚙️ 馆藏管理控制台</h1>
+    <span class="admin-subhead">Curator Administration & Archive Settings</span>
+  </div>
+  <a class="nav-link admin-back-btn" href="/">返回前台书架</a>
+</div>
+
+<!-- 实时扫描进度条组件 (沉浸式卡片) -->
+<section id="scan-progress-box" class="panel" style="display:none;border-left:5px solid var(--accent-terra);background:var(--bg-surface-elevated);box-shadow:var(--shadow-md);margin-bottom:24px;">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+    <h3 style="margin:0;font-size:15px;color:var(--text-main);display:flex;align-items:center;gap:10px;">
+      <span id="scan-spinner" style="display:inline-block;width:14px;height:14px;border:2px solid var(--accent-terra);border-top-color:transparent;border-radius:50%;animation:spin 0.8s linear infinite;"></span>
+      <span id="scan-status-title">正在扫描漫画档案馆...</span>
+    </h3>
+    <span id="scan-percent-badge" style="font-weight:700;font-size:13px;color:var(--accent-terra);background:var(--accent-terra-bg);padding:3px 12px;border-radius:var(--radius-full);border:1px solid var(--accent-terra-border);">0.0%</span>
+  </div>
+  <div style="background:var(--color-warm-parchment);height:10px;border-radius:var(--radius-full);overflow:hidden;margin:12px 0;">
+    <div id="scan-progress-bar" style="background:linear-gradient(90deg, var(--accent-terra), var(--accent-ochre), var(--accent-sage));height:100%;width:0%;transition:width 0.3s ease;border-radius:var(--radius-full);"></div>
+  </div>
+  <div style="display:flex;justify-content:space-between;font-size:12.5px;color:var(--text-muted);gap:8px;">
+    <span id="scan-current-file" style="max-width:65%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">准备中...</span>
+    <span id="scan-counts" style="font-weight:600;color:var(--text-secondary);flex-shrink:0;">0 / 0</span>
+  </div>
+</section>
+
+<style>
+@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+</style>
+
+<!-- 仪表盘数据统计 (响应式卡片网格) -->
+<div class="stats">
+  <div class="stat-card"><b id="stat-manga">{{ stats.manga }}</b><span>馆藏漫画总数</span></div>
+  <div class="stat-card"><b id="stat-chapters">{{ stats.chapters }}</b><span>章节/分卷总数</span></div>
+  <div class="stat-card"><b id="stat-pages">{{ stats.pages }}</b><span>画格图片总数</span></div>
+  <div class="stat-card"><b id="stat-sources">{{ stats.sources }}</b><span>已识别来源站点</span></div>
+</div>
+
+<!-- 漫画库根目录配置（核心） -->
+<section class="panel">
+  <h2>📁 漫画库根目录设置</h2>
+  <form class="root-config-form" method="post" action="/admin/config/save">
+    <div class="form-grid">
+      <div class="form-group">
+        <label>网站标题</label>
+        <input name="site_title" value="{{ config.site_title }}" placeholder="例如：轻量漫画馆" required>
+      </div>
+      <div class="form-group">
+        <label>漫画库根目录绝对路径</label>
+        <input name="library_root" value="{{ config.library_root }}" placeholder="例如：/home/leaf/D/.漫画 或 D:\漫画库" required>
+      </div>
+    </div>
+    <div class="admin-actions-bar">
+      <button type="submit" class="btn-save">💾 保存设置并触发扫描</button>
+      <button type="button" class="btn-rescan" onclick="triggerFullScan()">⚡ 立即全库重新扫描</button>
+    </div>
+  </form>
+  <p class="notice" style="margin-top:16px;">
+    💡 <b>只需设置一个总目录</b>。程序会自动递归发现其下的第一级子目录作为来源站点（如 <code>网站A/</code>、<code>网站B/</code>、<code>noyacg/</code>、<code>b/</code> 等），并自动解析单本漫画、分卷分话结构。后续在硬盘中新增站点或漫画文件均会自动识别。
+  </p>
+</section>
+
+<!-- 自动识别的子站点列表 -->
+<section class="panel">
+  <h2>🌐 已自动识别的来源站点</h2>
+  {% for s in sources %}
+  <div class="source-row">
+    <div class="source-info-name">{{ s.name }}</div>
+    <div class="source-info-path">相对路径: <code>{{ s.rel_path }}</code></div>
+    <div class="source-info-count">{{ s.manga_count }} 部漫画</div>
+    <div class="source-action">
+      <form method="post" action="/admin/source/{{ s.id }}/scan">
+        <button type="submit" class="btn-subsite-scan">重新扫描本站</button>
+      </form>
+    </div>
+  </div>
+  {% else %}
+  <div class="empty-archive">暂无识别到的站点，请点击上方“立即全库重新扫描”。</div>
+  {% endfor %}
+</section>
+
+<!-- 扫描任务记录 -->
+<section class="panel">
+  <h2>📋 最近扫描任务记录</h2>
+  <div class="table-responsive">
+    <table>
+      <thead>
+        <tr><th>ID</th><th>状态</th><th>信息</th><th>创建时间</th></tr>
+      </thead>
+      <tbody>
+        {% for j in jobs %}
+        <tr>
+          <td>#{{ j.id }}</td>
+          <td>
+            {% if j.status == 'success' %}<span style="color:var(--accent-sage);font-weight:600;">● 成功</span>
+            {% elif j.status == 'running' %}<span style="color:var(--accent-teal);font-weight:600;">● 运行中</span>
+            {% else %}<span style="color:var(--accent-terra);font-weight:600;">● {{ j.status }}</span>{% endif %}
+          </td>
+          <td>{{ j.message or '-' }}</td>
+          <td style="color:var(--text-muted);font-size:12.5px;">{{ j.created_at }}</td>
+        </tr>
+        {% else %}
+        <tr><td colspan="4" style="text-align:center;color:var(--text-muted);">暂无任务记录</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<script>
+async function triggerFullScan() {
+  await fetch('/admin/scan/full', { method: 'POST' });
+}
+
+(function() {
+  const box = document.getElementById('scan-progress-box');
+  const bar = document.getElementById('scan-progress-bar');
+  const badge = document.getElementById('scan-percent-badge');
+  const title = document.getElementById('scan-status-title');
+  const currentFile = document.getElementById('scan-current-file');
+  const counts = document.getElementById('scan-counts');
+  const spinner = document.getElementById('scan-spinner');
+  
+  const statManga = document.getElementById('stat-manga');
+  const statChapters = document.getElementById('stat-chapters');
+  const statPages = document.getElementById('stat-pages');
+  const statSources = document.getElementById('stat-sources');
+
+  let wasRunning = false;
+
+  async function checkProgress() {
+    try {
+      const res = await fetch('/api/scan/progress');
+      if (!res.ok) return;
+      const data = await res.json();
+      
+      if (data.stats) {
+        if (statManga) statManga.textContent = data.stats.manga;
+        if (statChapters) statChapters.textContent = data.stats.chapters;
+        if (statPages) statPages.textContent = data.stats.pages;
+        if (statSources) statSources.textContent = data.stats.sources;
+      }
+
+      if (data.running) {
+        wasRunning = true;
+        box.style.display = 'block';
+        spinner.style.display = 'inline-block';
+        title.textContent = data.message || '正在扫描漫画库...';
+        badge.textContent = (data.percent || 0).toFixed(1) + '%';
+        bar.style.width = Math.min(100, Math.max(2, data.percent || 0)) + '%';
+        currentFile.textContent = data.current_title ? '当前: ' + data.current_title : '正在分析目录结构...';
+        counts.textContent = `${data.current_manga || 0} / ${data.total_mangas || 0} 部漫画`;
+      } else {
+        if (wasRunning || data.percent >= 100) {
+          wasRunning = false;
+          box.style.display = 'block';
+          spinner.style.display = 'none';
+          title.textContent = data.message || '全库扫描已完成！';
+          badge.textContent = '100%';
+          bar.style.width = '100%';
+          currentFile.textContent = '全部漫画与章节索引建立完毕';
+          counts.textContent = `${data.total_mangas} / ${data.total_mangas} 部漫画`;
+          setTimeout(() => {
+            box.style.display = 'none';
+          }, 8000);
+        } else {
+          box.style.display = 'none';
+        }
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
+  checkProgress();
+  setInterval(checkProgress, 1000);
+})();
+</script>
+{% endblock %}

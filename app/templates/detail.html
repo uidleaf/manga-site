@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="detail-container">
+  <!-- 极简文艺画刊式返回导航 (Subtle Artistic Editorial Back Navigation) -->
+  <nav class="artistic-back-nav-wrap" aria-label="返回导航">
+    <a href="/" class="artistic-back-link">
+      <span class="back-glyph">‹</span>
+      <span class="back-label">漫画馆</span>
+    </a>
+  </nav>
+
+  <!-- 漫画详情 Hero (移动端纵向堆叠，桌面端横向展示) -->
+  <div class="detail-hero">
+    <div class="detail-cover-wrap">
+      <img src="/thumb/{{ manga.id }}" alt="{{ manga.title }}">
+    </div>
+    <div class="detail-info">
+      <div class="detail-source-badge">{{ manga.source_name }} 来源</div>
+      <h1 class="detail-title">{{ manga.title }}</h1>
+      <div class="detail-meta-row">
+        <span class="detail-meta-pill">共 {{ manga.chapter_count }} 话/卷</span>
+        <span class="detail-meta-pill">共 {{ manga.page_count }} 页画格</span>
+      </div>
+      {% if first_chapter_id %}
+      <div class="detail-actions">
+        <a class="btn-read-primary" href="/read/{{ first_chapter_id }}">
+          <span>📖 开始阅读首话</span>
+        </a>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- 章节列表 -->
+  <div class="chapters-section">
+    <div class="section-header">
+      <h2 class="section-title">章节典藏目录 ({{ chapters|length }})</h2>
+      <span class="section-subtitle">点击任一章节开启阅读</span>
+    </div>
+    <div class="chapter-grid">
+      {% for ch in chapters %}
+      <a class="chapter-card" href="/read/{{ ch.id }}">
+        <div class="chapter-title">{{ ch.title }}</div>
+        <div class="chapter-meta">{{ ch.page_count }}P</div>
+      </a>
+      {% else %}
+      <div class="empty-archive">暂无章节数据</div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,125 @@
+{% extends 'base.html' %}
+{% block body_class %}reader-theme{% endblock %}
+{% block content %}
+
+<!-- 顶部超细阅读进度指示条 (赤陶到鼠尾草渐变) -->
+<div id="read-progress-bar" style="position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg, #c8684f, #d48748, #667d6c);width:0%;z-index:9999;transition:width 0.1s ease;"></div>
+
+<!-- 极简半透明浮动阅读头部 (支持手势点击隐藏/显示) -->
+<div class="reader-head" id="reader-floating-head">
+  <div class="reader-left">
+    <a href="/manga/{{ manga.id }}" class="reader-back" aria-label="返回目录">
+      <span class="back-arrow">←</span>
+      <span class="back-text">目录</span>
+    </a>
+    <strong class="reader-title">{{ manga.title }}</strong>
+    <span class="reader-chapter-tag">{{ chapter.title }}</span>
+  </div>
+  <div class="reader-right">
+    <span id="read-progress-text" class="reader-progress-badge">0% (1/{{ pages|length }})</span>
+    <div class="reader-ch-controls">
+      {% if prev_chapter %}
+      <a href="/read/{{ prev_chapter.id }}" class="ch-nav-btn" title="上一话: {{ prev_chapter.title }}">上一话</a>
+      {% endif %}
+      {% if next_chapter %}
+      <a href="/read/{{ next_chapter.id }}" class="ch-nav-btn ch-next-pill" title="下一话: {{ next_chapter.title }}">下一话</a>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<!-- 移动端全贴边 / 居中无缝画格流 (Edge-to-Edge Stream) -->
+<div class="reader-body">
+  <div class="reader-page-stream" id="reader-stream">
+    {% for p in pages %}
+    <div class="reader-page-item" id="p{{ p.page_number }}" data-page="{{ p.page_number }}">
+      <img loading="lazy" src="/media/{{ p.id }}" alt="第{{ p.page_number }}页" decoding="async">
+    </div>
+    {% endfor %}
+  </div>
+
+  <!-- 底部典藏切换栏 (大触控靶心) -->
+  <div class="reader-bottom-nav">
+    {% if prev_chapter %}
+    <a href="/read/{{ prev_chapter.id }}" class="btn-nav btn-nav-prev">
+      <span class="btn-arrow">←</span>
+      <span>上一话：{{ prev_chapter.title }}</span>
+    </a>
+    {% else %}
+    <span class="btn-nav disabled">已经是第一话</span>
+    {% endif %}
+
+    <a href="/manga/{{ manga.id }}" class="btn-nav btn-nav-index">返回漫画目录</a>
+
+    {% if next_chapter %}
+    <a href="/read/{{ next_chapter.id }}" class="btn-nav primary btn-nav-next">
+      <span>下一话：{{ next_chapter.title }}</span>
+      <span class="btn-arrow">→</span>
+    </a>
+    {% else %}
+    <span class="btn-nav disabled">已经是最新话</span>
+    {% endif %}
+  </div>
+</div>
+
+<script>
+(function() {
+  const bar = document.getElementById('read-progress-bar');
+  const text = document.getElementById('read-progress-text');
+  const pages = document.querySelectorAll('.reader-page-item');
+  const head = document.getElementById('reader-floating-head');
+  const totalPages = pages.length;
+
+  let lastScrollY = window.scrollY;
+  let ticking = false;
+
+  function updateProgress() {
+    const scrollY = window.scrollY || window.pageYOffset;
+    const totalH = document.documentElement.scrollHeight - window.innerHeight;
+    const pct = totalH > 0 ? Math.min(100, Math.max(0, (scrollY / totalH) * 100)) : 100;
+    
+    if (bar) bar.style.width = pct + '%';
+
+    let curPage = 1;
+    const midY = window.innerHeight * 0.45;
+    for (const p of pages) {
+      const rect = p.getBoundingClientRect();
+      if (rect.top <= midY) {
+        curPage = p.getAttribute('data-page') || curPage;
+      }
+    }
+
+    if (text) {
+      text.textContent = `${Math.round(pct)}% (${curPage}/${totalPages}P)`;
+    }
+
+    // 移动端向下滚动轻微收起，向上滚动呼出
+    if (window.innerWidth <= 768 && head) {
+      if (scrollY > lastScrollY && scrollY > 120) {
+        head.classList.add('head-autohide');
+      } else {
+        head.classList.remove('head-autohide');
+      }
+    }
+    lastScrollY = scrollY;
+    ticking = false;
+  }
+
+  window.addEventListener('scroll', function() {
+    if (!ticking) {
+      window.requestAnimationFrame(updateProgress);
+      ticking = true;
+    }
+  }, { passive: true });
+
+  window.addEventListener('resize', updateProgress);
+  updateProgress();
+
+  document.getElementById('reader-stream')?.addEventListener('click', function(e) {
+    if (head && window.innerWidth <= 768) {
+      head.classList.toggle('head-autohide');
+    }
+  });
+})();
+</script>
+{% endblock %}

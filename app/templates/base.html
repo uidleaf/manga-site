@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#f6f1e8">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<title>{{ config.site_title|default('漫画档案馆') }} · 典藏阅读</title>
+<link rel="stylesheet" href="/static/style.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@500;700;900&display=swap" rel="stylesheet">
+</head>
+<body class="{% block body_class %}{% endblock %}">
+
+<!-- 多层柔和有机水彩渐变与宣纸肌理底衬 (Atmospheric Watercolor & Paper Texture Canvas) -->
+<div class="ambient-canvas" aria-hidden="true">
+  <div class="ambient-haze haze-teal"></div>
+  <div class="ambient-haze haze-terracotta"></div>
+  <div class="ambient-haze haze-sage"></div>
+  <div class="ambient-haze haze-ocean"></div>
+  <div class="ambient-haze haze-peach"></div>
+  <div class="paper-grain"></div>
+  <div class="ambient-vignette"></div>
+</div>
+
+<!-- 响应式自适应顶部导航 (Mobile & Desktop Header) -->
+<header class="topbar">
+  <div class="brand-wrapper">
+    <div class="brand-mark">栞</div>
+    <a class="brand-text" href="/">
+      <span class="brand-title">{{ config.site_title|default('漫画档案馆') }}</span>
+      <span class="brand-subtitle">Curated Archive</span>
+    </a>
+  </div>
+  <nav class="topbar-nav">
+    <a class="nav-link" href="/">
+      <svg class="nav-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+      <span>馆藏书架</span>
+    </a>
+    <a class="nav-link admin-pill" href="/admin">
+      <svg class="nav-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+      <span>控制台</span>
+    </a>
+  </nav>
+</header>
+
+<main class="container">
+{% block content %}{% endblock %}
+</main>
+
+</body>
+</html>
