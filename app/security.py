@@ -73,10 +73,36 @@ def require_admin(request: Request):
     return admin, None
 
 
-def verify_login(username: str, password: str) -> bool:
+def has_any_admin() -> bool:
     con = connect()
     try:
-        row = con.execute("SELECT password_hash FROM admin_users WHERE username=?", (username,)).fetchone()
-        return bool(row and verify_password(row["password_hash"], password))
+        cnt = con.execute("SELECT COUNT(*) FROM admin_users").fetchone()[0]
+        return cnt > 0
     finally:
         con.close()
+
+
+def create_admin(username: str, password: str) -> int:
+    con = connect()
+    try:
+        pw_hash = hash_password(password)
+        cur = con.execute("INSERT INTO admin_users (username, password_hash) VALUES (?, ?)", (username.strip(), pw_hash))
+        con.commit()
+        return cur.lastrowid
+    finally:
+        con.close()
+
+
+def authenticate(username: str, password: str) -> dict | None:
+    con = connect()
+    try:
+        row = con.execute("SELECT id, username, password_hash FROM admin_users WHERE username=?", (username.strip(),)).fetchone()
+        if row and verify_password(row["password_hash"], password):
+            return {"id": row["id"], "username": row["username"]}
+        return None
+    finally:
+        con.close()
+
+
+def verify_login(username: str, password: str) -> bool:
+    return authenticate(username, password) is not None

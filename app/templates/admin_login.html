@@ -1,1 +1,206 @@
-<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>管理登录</title><link rel="stylesheet" href="/static/style.css"></head><body><main class="login-wrap"><div class="login-card"><h1>管理后台</h1>{% if error %}<div class="error">{{ error }}</div>{% endif %}{% if not has_admin %}<p>首次启动，请先设置管理员。</p><form method="post" action="/admin/setup"><input name="username" required placeholder="管理员用户名"><input name="password" type="password" minlength="12" required placeholder="密码（至少12位）"><button>创建管理员</button></form>{% else %}<form method="post" action="/admin/login"><input name="username" required placeholder="用户名"><input name="password" type="password" required placeholder="密码"><button>登录</button></form>{% endif %}</div></main></body></html>
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#f6f1e8">
+<title>管理控制台身份验证 · CURATED MANGA ARCHIVE</title>
+<link rel="stylesheet" href="/static/style.css?v=20260904_header_only">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@500;600;700;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+.login-page-body {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background-color: var(--bg-page-base);
+}
+.login-container {
+  width: 100%;
+  max-width: 420px;
+  background: var(--bg-card);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-lg);
+  padding: 36px 32px;
+  box-shadow: 0 12px 36px rgba(43, 36, 30, 0.08);
+}
+.login-brand-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+.login-mark {
+  width: 36px;
+  height: 36px;
+  background: var(--accent-terra);
+  color: #fff;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-serif);
+  font-size: 18px;
+  font-weight: 700;
+}
+.login-title-group h1 {
+  font-family: var(--font-serif);
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-main);
+  margin: 0;
+}
+.login-title-group span {
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+.login-notice {
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+.login-error-box {
+  background: rgba(200, 104, 79, 0.08);
+  border: 1px solid rgba(200, 104, 79, 0.3);
+  color: var(--accent-terra);
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  font-size: 12.5px;
+  margin-bottom: 18px;
+}
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.form-field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.form-field-group label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+}
+.login-input {
+  width: 100%;
+  padding: 10px 14px;
+  background: #ffffff;
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  color: var(--text-main);
+  outline: none;
+  transition: all 0.18s ease;
+  font-family: inherit;
+}
+.login-input:focus {
+  border-color: var(--accent-terra);
+  box-shadow: 0 0 0 3px rgba(200, 104, 79, 0.12);
+}
+.btn-login-submit {
+  width: 100%;
+  padding: 12px;
+  background: var(--accent-terra);
+  color: #ffffff;
+  border: none;
+  border-radius: var(--radius-full);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  margin-top: 8px;
+  transition: all 0.18s ease;
+  box-shadow: 0 4px 14px rgba(200, 104, 79, 0.25);
+}
+.btn-login-submit:hover {
+  background: var(--accent-terra-hover);
+  transform: translateY(-1px);
+}
+.login-footer-links {
+  margin-top: 24px;
+  text-align: center;
+  font-size: 12px;
+}
+.login-footer-links a {
+  color: var(--text-muted);
+  text-decoration: none;
+}
+.login-footer-links a:hover {
+  color: var(--accent-terra);
+}
+</style>
+</head>
+<body class="login-page-body">
+
+<div class="ambient-canvas" aria-hidden="true">
+  <div class="ambient-haze haze-teal"></div>
+  <div class="ambient-haze haze-terracotta"></div>
+  <div class="ambient-haze haze-sage"></div>
+  <div class="paper-grain"></div>
+</div>
+
+<main class="login-container">
+  <div class="login-brand-head">
+    <div class="login-mark">栞</div>
+    <div class="login-title-group">
+      <h1>控制台身份验证</h1>
+      <span class="font-mono">DIGITAL ARCHIVE CONTROL</span>
+    </div>
+  </div>
+
+  {% if error %}
+  <div class="login-error-box font-mono">
+    {{ error }}
+  </div>
+  {% endif %}
+
+  {% if not has_admin %}
+  <div class="login-notice">
+    <strong>首次初始化引导</strong>：系统尚未设定管理员账户。请设置您的管理员凭据以激活典藏控制台。
+  </div>
+  <form class="login-form" method="post" action="/admin/setup">
+    <div class="form-field-group font-mono">
+      <label for="username">ADMIN USERNAME / 管理员账号</label>
+      <input class="login-input" id="username" name="username" type="text" required autocomplete="username" placeholder="如 admin">
+    </div>
+    <div class="form-field-group font-mono">
+      <label for="password">SECURE PASSWORD / 登录密码 (至少8位)</label>
+      <input class="login-input" id="password" name="password" type="password" minlength="8" required autocomplete="new-password" placeholder="请输入高强度管理员密码">
+    </div>
+    <button class="btn-login-submit font-mono" type="submit">初始化并创建管理员</button>
+  </form>
+  {% else %}
+  <form class="login-form" method="post" action="/admin/login">
+    <div class="form-field-group font-mono">
+      <label for="username">ADMIN USERNAME / 管理员账号</label>
+      <input class="login-input" id="username" name="username" type="text" required autocomplete="username" placeholder="请输入管理员账号">
+    </div>
+    <div class="form-field-group font-mono">
+      <label for="password">PASSWORD / 登录密码</label>
+      <input class="login-input" id="password" name="password" type="password" required autocomplete="current-password" placeholder="请输入密码">
+    </div>
+    <button class="btn-login-submit font-mono" type="submit">验证身份并进入控制台</button>
+  </form>
+  {% endif %}
+
+  <div class="login-footer-links font-mono">
+    <a href="/">← 返回典藏画廊首页</a>
+  </div>
+</main>
+
+</body>
+</html>

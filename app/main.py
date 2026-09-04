@@ -19,6 +19,17 @@ from PIL import Image, ImageOps
 from .config import load_config, save_config
 from .db import connect, init_db
 from .scanner import ScanManager
+from .security import (
+    require_admin,
+    current_admin,
+    make_session,
+    authenticate,
+    has_any_admin,
+    create_admin,
+    is_rate_limited,
+    record_failed_attempt,
+    clear_attempts,
+)
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 THUMB_DIR = BASE_DIR / "data" / "thumbnails"
@@ -350,8 +361,85 @@ def media(page_id: int):
     return FileResponse(file_path, headers={"Cache-Control": "public, max-age=604800"})
 
 
+@app.get("/admin/login", response_class=HTMLResponse)
+def admin_login_page(request: Request, error: str = ""):
+    if current_admin(request):
+        return RedirectResponse("/admin", status_code=303)
+    has_admin = has_any_admin()
+    return templates.TemplateResponse("admin_login.html", {
+        "request": request,
+        "has_admin": has_admin,
+        "error": error,
+        "config": load_config(),
+    })
+
+
+@app.post("/admin/login")
+def admin_login_post(request: Request, username: str = Form(...), password: str = Form(...)):
+    client_ip = request.client.host if request.client else "127.0.0.1"
+    if is_rate_limited(client_ip):
+        return templates.TemplateResponse("admin_login.html", {
+            "request": request,
+            "has_admin": True,
+            "error": "登录尝试过多，系统已临时锁定 5 分钟，请稍后再试。",
+            "config": load_config(),
+        }, status_code=429)
+    admin = authenticate(username, password)
+    if not admin:
+        record_failed_attempt(client_ip)
+        return templates.TemplateResponse("admin_login.html", {
+            "request": request,
+            "has_admin": True,
+            "error": "用户名或密码错误",
+            "config": load_config(),
+        }, status_code=401)
+    clear_attempts(client_ip)
+    token = make_session(admin["id"], admin["username"])
+    resp = RedirectResponse("/admin", status_code=303)
+    resp.set_cookie(
+        "manga_admin",
+        token,
+        httponly=True,
+        samesite="lax",
+        max_age=int(load_config().get("session_max_age", 604800)),
+        path="/"
+    )
+    return resp
+
+
+@app.post("/admin/setup")
+def admin_setup_post(request: Request, username: str = Form(...), password: str = Form(...)):
+    if has_any_admin():
+        return RedirectResponse("/admin/login", status_code=303)
+    u = username.strip()
+    p = password.strip()
+    if not u or len(p) < 8:
+        return templates.TemplateResponse("admin_login.html", {
+            "request": request,
+            "has_admin": False,
+            "error": "用户名不能为空，密码长度至少需为 8 位",
+            "config": load_config(),
+        }, status_code=400)
+    uid = create_admin(u, p)
+    token = make_session(uid, u)
+    resp = RedirectResponse("/admin", status_code=303)
+    resp.set_cookie(
+        "manga_admin",
+        token,
+        httponly=True,
+        samesite="lax",
+        max_age=int(load_config().get("session_max_age", 604800)),
+        path="/"
+    )
+    return resp
+
+
 @app.get("/admin", response_class=HTMLResponse)
 def admin_home(request: Request):
+    admin, redirect = require_admin(request)
+    if redirect:
+        return redirect
+
     con = connect()
     try:
         total_manga = con.execute("SELECT COUNT(*) FROM manga").fetchone()[0]
@@ -406,7 +494,6 @@ def admin_home(request: Request):
         growth_points = []
         base_count = max(0, total_manga - today_manga)
         for idx, d in enumerate(dates_7d):
-            # 真实平滑递增点
             val = int(base_count + (today_manga * (idx + 1) / 7))
             growth_points.append({"date": d, "value": val})
 
@@ -478,6 +565,9 @@ async def analytics_ping(request: Request):
 
 @app.post("/admin/source/test-rule")
 async def test_parsing_rule(request: Request):
+    admin, redirect = require_admin(request)
+    if redirect:
+        return JSONResponse({"matched": False, "error": "请先登录管理员账号"}, status_code=401)
     try:
         data = await request.json()
     except Exception:
@@ -508,7 +598,10 @@ async def test_parsing_rule(request: Request):
 
 
 @app.post("/admin/source/{source_id}/update-rule")
-def update_source_rule(source_id: int, parsing_rule: str = Form("")):
+def update_source_rule(request: Request, source_id: int, parsing_rule: str = Form("")):
+    admin, redirect = require_admin(request)
+    if redirect:
+        return redirect
     con = connect()
     try:
         con.execute("UPDATE sources SET parsing_rule=? WHERE id=?", (parsing_rule.strip(), source_id))
@@ -519,19 +612,28 @@ def update_source_rule(source_id: int, parsing_rule: str = Form("")):
 
 
 @app.post("/admin/scan/pause")
-def admin_scan_pause():
+def admin_scan_pause(request: Request):
+    admin, redirect = require_admin(request)
+    if redirect:
+        return JSONResponse({"ok": False, "error": "unauthorized"}, status_code=401)
     manager.pause()
     return JSONResponse({"ok": True, "status": "paused"})
 
 
 @app.post("/admin/scan/resume")
-def admin_scan_resume():
+def admin_scan_resume(request: Request):
+    admin, redirect = require_admin(request)
+    if redirect:
+        return JSONResponse({"ok": False, "error": "unauthorized"}, status_code=401)
     manager.resume()
     return JSONResponse({"ok": True, "status": "resumed"})
 
 
 @app.post("/admin/config/save")
 def admin_save_config(request: Request, library_root: str = Form(...), site_title: str = Form("轻量漫画馆")):
+    admin, redirect = require_admin(request)
+    if redirect:
+        return redirect
     path_clean = str(Path(library_root.strip()).expanduser().resolve())
     if not Path(path_clean).is_dir():
         return RedirectResponse("/admin?error=路径不存在，请检查后重试", status_code=303)
@@ -545,19 +647,28 @@ def admin_save_config(request: Request, library_root: str = Form(...), site_titl
 
 
 @app.post("/admin/scan/full")
-def admin_scan_full():
+def admin_scan_full(request: Request):
+    admin, redirect = require_admin(request)
+    if redirect:
+        return redirect
     manager.enqueue_full_scan()
     return RedirectResponse("/admin", status_code=303)
 
 
 @app.post("/admin/source/{source_id}/scan")
-def admin_scan_source(source_id: int):
+def admin_scan_source(request: Request, source_id: int):
+    admin, redirect = require_admin(request)
+    if redirect:
+        return redirect
     manager.enqueue_source_scan(source_id)
     return RedirectResponse("/admin", status_code=303)
 
 
 @app.get("/api/scan/progress")
-def api_scan_progress():
+def api_scan_progress(request: Request):
+    admin, redirect = require_admin(request)
+    if redirect:
+        return JSONResponse({"error": "unauthorized"}, status_code=401)
     progress = manager.get_progress()
     con = connect()
     try:
@@ -576,7 +687,9 @@ def api_scan_progress():
 
 @app.get("/admin/logout")
 def admin_logout():
-    return RedirectResponse("/", status_code=303)
+    resp = RedirectResponse("/admin/login", status_code=303)
+    resp.delete_cookie("manga_admin", path="/")
+    return resp
 
 
 @app.get("/api/health")
