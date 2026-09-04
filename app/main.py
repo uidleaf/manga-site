@@ -420,7 +420,15 @@ def admin_setup_post(request: Request, username: str = Form(...), password: str 
             "error": "用户名不能为空，密码长度至少需为 8 位",
             "config": load_config(),
         }, status_code=400)
-    uid = create_admin(u, p)
+    try:
+        uid = create_admin(u, p)
+    except Exception as exc:
+        return templates.TemplateResponse("admin_login.html", {
+            "request": request,
+            "has_admin": False,
+            "error": f"创建管理员失败: {exc}，请稍后重试",
+            "config": load_config(),
+        }, status_code=500)
     token = make_session(uid, u)
     resp = RedirectResponse("/admin", status_code=303)
     resp.set_cookie(

@@ -105,20 +105,21 @@ CREATE TABLE IF NOT EXISTS analytics_daily (
 
 def connect() -> sqlite3.Connection:
     DATA_DIR.mkdir(parents=True, exist_ok=True)
-    con = sqlite3.connect(DB_PATH, timeout=60)
+    con = sqlite3.connect(DB_PATH, timeout=30.0)
     con.row_factory = sqlite3.Row
     con.execute("PRAGMA foreign_keys=ON")
-    con.execute("PRAGMA busy_timeout=10000")
-    con.execute("PRAGMA journal_mode=WAL")
+    con.execute("PRAGMA busy_timeout=30000")
     return con
 
 
 def init_db() -> None:
     DATA_DIR.mkdir(parents=True, exist_ok=True)
-    con = connect()
+    con = sqlite3.connect(DB_PATH, timeout=30.0)
     try:
+        con.execute("PRAGMA journal_mode=WAL")
+        con.execute("PRAGMA busy_timeout=30000")
         con.executescript(SCHEMA)
-        cols = [r["name"] for r in con.execute("PRAGMA table_info(sources)").fetchall()]
+        cols = [r[1] for r in con.execute("PRAGMA table_info(sources)").fetchall()]
         if "parsing_rule" not in cols:
             con.execute("ALTER TABLE sources ADD COLUMN parsing_rule TEXT")
         con.commit()
