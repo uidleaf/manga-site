@@ -4,148 +4,336 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#f6f1e8">
-<title>管理控制台身份验证 · CURATED MANGA ARCHIVE</title>
-<link rel="stylesheet" href="/static/style.css?v=20260904_header_only">
+<title>控制台身份验证 · CURATED ARCHIVE LAB</title>
+<link rel="stylesheet" href="/static/style.css?v=20260904_secure_02">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@500;600;700;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-.login-page-body {
+/* ==========================================================================
+   Archive Pass · Curated Security Gateway
+   Warm Ivory Paper, Faint Watercolor Haze, Hairline Borders & Quiet Editorial Typography
+   ========================================================================== */
+
+:root {
+  --bg-page-base: #f6f1e8;
+  --bg-pass: rgba(253, 251, 247, 0.88);
+  --text-main: #2b241e;
+  --text-secondary: #5e5246;
+  --text-muted: #8d7e70;
+  --text-subtle: #b6a99c;
+  --accent-terra: #c8684f;
+  --accent-terra-hover: #b3563e;
+  --accent-teal: #415a63;
+  --accent-sage: #667d6c;
+  --border-subtle: rgba(186, 172, 157, 0.45);
+  --border-medium: rgba(186, 172, 157, 0.7);
+  --font-serif: "Noto Serif SC", "Songti SC", Georgia, serif;
+  --font-sans: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body.archive-pass-body {
+  font-family: var(--font-sans);
+  background-color: var(--bg-page-base);
+  color: var(--text-main);
   min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 24px;
+  padding: 24px 16px;
+  position: relative;
+  overflow-x: hidden;
+}
+
+.font-mono { font-family: var(--font-mono); }
+.font-serif { font-family: var(--font-serif); }
+
+/* Ambient Atmosphere (Haze + Paper Grain) */
+.ambient-canvas {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: -1;
+  overflow: hidden;
   background-color: var(--bg-page-base);
 }
-.login-container {
+
+.ambient-haze {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+}
+
+.haze-teal {
+  top: -10vw;
+  left: -10vw;
+  width: 55vw;
+  height: 55vw;
+  background: radial-gradient(circle, rgba(65, 90, 99, 0.09) 0%, transparent 75%);
+}
+
+.haze-terracotta {
+  top: -5vw;
+  right: -10vw;
+  width: 60vw;
+  height: 60vw;
+  background: radial-gradient(circle, rgba(200, 104, 79, 0.09) 0%, rgba(214, 135, 72, 0.04) 55%, transparent 80%);
+}
+
+.haze-sage {
+  bottom: -10vh;
+  left: 20vw;
+  width: 60vw;
+  height: 60vw;
+  background: radial-gradient(circle, rgba(102, 125, 108, 0.08) 0%, transparent 80%);
+}
+
+.paper-grain {
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.035'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  mix-blend-mode: multiply;
+  opacity: 0.9;
+}
+
+/* Archive Pass Container */
+.archive-pass-card {
   width: 100%;
-  max-width: 420px;
-  background: var(--bg-card);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  border: 1px solid var(--border-medium);
-  border-radius: var(--radius-lg);
-  padding: 36px 32px;
-  box-shadow: 0 12px 36px rgba(43, 36, 30, 0.08);
-}
-.login-brand-head {
+  max-width: 400px;
+  background: var(--bg-pass);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border-subtle);
+  border-radius: 18px;
+  padding: 36px 30px 32px;
+  box-shadow: 0 10px 30px rgba(43, 36, 30, 0.05);
   display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 24px;
+  flex-direction: column;
+  position: relative;
+  transition: all 0.2s ease;
 }
-.login-mark {
-  width: 36px;
-  height: 36px;
+
+/* 01. Visual Center of Gravity (Centred Emblem & Title) */
+.pass-emblem-zone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.pass-mark-seal {
+  width: 38px;
+  height: 38px;
   background: var(--accent-terra);
-  color: #fff;
-  border-radius: var(--radius-sm);
+  color: #ffffff;
+  border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
   font-family: var(--font-serif);
-  font-size: 18px;
+  font-size: 19px;
   font-weight: 700;
+  box-shadow: 0 2px 8px rgba(200, 104, 79, 0.25);
+  margin-bottom: 12px;
 }
-.login-title-group h1 {
+
+.pass-lab-tag {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  color: var(--accent-teal);
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.pass-main-title {
   font-family: var(--font-serif);
-  font-size: 18px;
+  font-size: 20px;
   font-weight: 700;
   color: var(--text-main);
-  margin: 0;
+  letter-spacing: -0.01em;
+  line-height: 1.3;
 }
-.login-title-group span {
-  font-size: 10px;
-  letter-spacing: 1.5px;
+
+.pass-sub-title {
+  font-size: 9.5px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
   color: var(--text-muted);
   text-transform: uppercase;
+  margin-top: 3px;
 }
-.login-notice {
-  font-size: 13px;
-  color: var(--text-secondary);
-  line-height: 1.5;
-  margin-bottom: 20px;
-  padding-bottom: 16px;
-  border-bottom: 1px solid var(--border-subtle);
+
+.pass-divider {
+  width: 100%;
+  height: 1px;
+  background: var(--border-subtle);
+  margin: 20px 0 18px;
 }
-.login-error-box {
-  background: rgba(200, 104, 79, 0.08);
-  border: 1px solid rgba(200, 104, 79, 0.3);
-  color: var(--accent-terra);
-  padding: 10px 14px;
-  border-radius: var(--radius-sm);
-  font-size: 12.5px;
+
+/* 02. Notice Prompt */
+.pass-notice-block {
   margin-bottom: 18px;
 }
-.login-form {
+
+.notice-eyebrow {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--accent-terra);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin-bottom: 3px;
+}
+
+.notice-desc {
+  font-size: 12.5px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+/* 03. Error Alert */
+.pass-error-alert {
+  background: rgba(200, 104, 79, 0.08);
+  border: 1px solid rgba(200, 104, 79, 0.25);
+  color: var(--accent-terra);
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+/* 04. Form Fields */
+.pass-form {
   display: flex;
   flex-direction: column;
   gap: 16px;
 }
-.form-field-group {
+
+.pass-field-group {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 5px;
 }
-.form-field-group label {
-  font-size: 11px;
-  font-weight: 700;
+
+.pass-label-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.pass-label-zh {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.pass-label-en {
+  font-size: 9px;
+  font-weight: 600;
+  color: var(--text-muted);
   letter-spacing: 0.08em;
-  color: var(--text-secondary);
   text-transform: uppercase;
 }
-.login-input {
+
+.pass-input {
   width: 100%;
   padding: 10px 14px;
   background: #ffffff;
   border: 1px solid var(--border-medium);
-  border-radius: var(--radius-sm);
-  font-size: 14px;
+  border-radius: 7px;
+  font-size: 13.5px;
   color: var(--text-main);
   outline: none;
+  font-family: var(--font-mono);
   transition: all 0.18s ease;
-  font-family: inherit;
+  box-shadow: 0 1px 3px rgba(43, 36, 30, 0.03);
 }
-.login-input:focus {
+
+.pass-input:focus {
   border-color: var(--accent-terra);
   box-shadow: 0 0 0 3px rgba(200, 104, 79, 0.12);
 }
-.btn-login-submit {
+
+.pass-input::placeholder {
+  color: var(--text-subtle);
+  font-family: var(--font-sans);
+}
+
+/* 05. Action Area */
+.pass-action-zone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 6px;
+}
+
+.btn-pass-submit {
   width: 100%;
-  padding: 12px;
+  padding: 11px 20px;
   background: var(--accent-terra);
   color: #ffffff;
   border: none;
   border-radius: var(--radius-full);
-  font-size: 14px;
+  font-size: 13.5px;
   font-weight: 600;
   letter-spacing: 0.06em;
   cursor: pointer;
-  margin-top: 8px;
   transition: all 0.18s ease;
-  box-shadow: 0 4px 14px rgba(200, 104, 79, 0.25);
+  box-shadow: 0 3px 12px rgba(200, 104, 79, 0.22);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
 }
-.btn-login-submit:hover {
+
+.btn-pass-submit:hover,
+.btn-pass-submit:active {
   background: var(--accent-terra-hover);
   transform: translateY(-1px);
 }
-.login-footer-links {
+
+.pass-action-subnote {
+  font-size: 9.5px;
+  font-weight: 600;
+  color: var(--text-muted);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin-top: 8px;
+}
+
+/* 06. Footer Back Link */
+.pass-footer-nav {
   margin-top: 24px;
   text-align: center;
-  font-size: 12px;
 }
-.login-footer-links a {
+
+.pass-back-link {
+  font-size: 11px;
+  font-weight: 600;
   color: var(--text-muted);
   text-decoration: none;
+  letter-spacing: 0.1em;
+  transition: color 0.18s ease;
 }
-.login-footer-links a:hover {
+
+.pass-back-link:hover {
   color: var(--accent-terra);
 }
 </style>
 </head>
-<body class="login-page-body">
+<body class="archive-pass-body">
 
+<!-- 多层柔和有机水彩与纸墨微粒肌理底衬 -->
 <div class="ambient-canvas" aria-hidden="true">
   <div class="ambient-haze haze-teal"></div>
   <div class="ambient-haze haze-terracotta"></div>
@@ -153,53 +341,99 @@
   <div class="paper-grain"></div>
 </div>
 
-<main class="login-container">
-  <div class="login-brand-head">
-    <div class="login-mark">栞</div>
-    <div class="login-title-group">
-      <h1>控制台身份验证</h1>
-      <span class="font-mono">DIGITAL ARCHIVE CONTROL</span>
-    </div>
+<!-- 档案凭证卡片 (Archive Pass Card) -->
+<main class="archive-pass-card">
+  <!-- 视觉重心：居中典藏印记与标题栈 -->
+  <div class="pass-emblem-zone">
+    <div class="pass-mark-seal" title="栞 · 典藏印记">栞</div>
+    <span class="pass-lab-tag font-mono">ARCHIVE LAB</span>
+    <h1 class="pass-main-title font-serif">控制台身份验证</h1>
+    <span class="pass-sub-title font-mono">DIGITAL ARCHIVE CONTROL</span>
   </div>
 
+  <div class="pass-divider"></div>
+
   {% if error %}
-  <div class="login-error-box font-mono">
+  <div class="pass-error-alert font-mono">
     {{ error }}
   </div>
   {% endif %}
 
   {% if not has_admin %}
-  <div class="login-notice">
-    <strong>首次初始化引导</strong>：系统尚未设定管理员账户。请设置您的管理员凭据以激活典藏控制台。
+  <!-- 首次初始化引导说明 -->
+  <div class="pass-notice-block">
+    <div class="notice-eyebrow font-mono">首次初始化</div>
+    <div class="notice-desc">
+      系统尚未建立管理员身份。<br>
+      请创建唯一的管理凭证以激活控制中心。
+    </div>
   </div>
-  <form class="login-form" method="post" action="/admin/setup">
-    <div class="form-field-group font-mono">
-      <label for="username">ADMIN USERNAME / 管理员账号</label>
-      <input class="login-input" id="username" name="username" type="text" required autocomplete="username" placeholder="如 admin">
+
+  <form class="pass-form" method="post" action="/admin/setup">
+    <div class="pass-field-group">
+      <div class="pass-label-row">
+        <label class="pass-label-zh" for="username">管理员账号</label>
+        <span class="pass-label-en font-mono">ADMIN USERNAME</span>
+      </div>
+      <input class="pass-input" id="username" name="username" type="text" required autocomplete="username" placeholder="admin" autofocus>
     </div>
-    <div class="form-field-group font-mono">
-      <label for="password">SECURE PASSWORD / 登录密码 (至少8位)</label>
-      <input class="login-input" id="password" name="password" type="password" minlength="8" required autocomplete="new-password" placeholder="请输入高强度管理员密码">
+
+    <div class="pass-field-group">
+      <div class="pass-label-row">
+        <label class="pass-label-zh" for="password">登录密码</label>
+        <span class="pass-label-en font-mono">SECURE PASSWORD</span>
+      </div>
+      <input class="pass-input" id="password" name="password" type="password" minlength="8" required autocomplete="new-password" placeholder="•••••••••••••">
     </div>
-    <button class="btn-login-submit font-mono" type="submit">初始化并创建管理员</button>
+
+    <div class="pass-action-zone">
+      <button class="btn-pass-submit font-mono" type="submit">
+        <span>建立管理员身份 →</span>
+      </button>
+      <span class="pass-action-subnote font-mono">ONE-TIME INITIALIZATION</span>
+    </div>
   </form>
+
   {% else %}
-  <form class="login-form" method="post" action="/admin/login">
-    <div class="form-field-group font-mono">
-      <label for="username">ADMIN USERNAME / 管理员账号</label>
-      <input class="login-input" id="username" name="username" type="text" required autocomplete="username" placeholder="请输入管理员账号">
+
+  <!-- 常规安全登录说明 -->
+  <div class="pass-notice-block">
+    <div class="notice-eyebrow font-mono">安全凭证验证</div>
+    <div class="notice-desc">
+      请输入已授权的管理员凭据进入管理实验室。
     </div>
-    <div class="form-field-group font-mono">
-      <label for="password">PASSWORD / 登录密码</label>
-      <input class="login-input" id="password" name="password" type="password" required autocomplete="current-password" placeholder="请输入密码">
+  </div>
+
+  <form class="pass-form" method="post" action="/admin/login">
+    <div class="pass-field-group">
+      <div class="pass-label-row">
+        <label class="pass-label-zh" for="username">管理员账号</label>
+        <span class="pass-label-en font-mono">ADMIN USERNAME</span>
+      </div>
+      <input class="pass-input" id="username" name="username" type="text" required autocomplete="username" placeholder="admin" autofocus>
     </div>
-    <button class="btn-login-submit font-mono" type="submit">验证身份并进入控制台</button>
+
+    <div class="pass-field-group">
+      <div class="pass-label-row">
+        <label class="pass-label-zh" for="password">登录密码</label>
+        <span class="pass-label-en font-mono">SECURE PASSWORD</span>
+      </div>
+      <input class="pass-input" id="password" name="password" type="password" required autocomplete="current-password" placeholder="•••••••••••••">
+    </div>
+
+    <div class="pass-action-zone">
+      <button class="btn-pass-submit font-mono" type="submit">
+        <span>验证凭据并进入 →</span>
+      </button>
+      <span class="pass-action-subnote font-mono">SECURE LABORATORY GATEWAY</span>
+    </div>
   </form>
   {% endif %}
 
-  <div class="login-footer-links font-mono">
-    <a href="/">← 返回典藏画廊首页</a>
-  </div>
+  <!-- 底部返回链接 -->
+  <nav class="pass-footer-nav">
+    <a class="pass-back-link font-mono" href="/">‹ BACK TO COLLECTION</a>
+  </nav>
 </main>
 
 </body>
