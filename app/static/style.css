@@ -1372,89 +1372,101 @@ body.mobile-nav-open .mobile-nav-drawer {
 }
 
 /* ==========================================================================
-   Manga Detail Page (Curated Editorial Monograph Archive)
-   Restrained Width, Prominent Artwork, Archival Directory & Ambient Cover Halo
+   Manga Detail Page · Atmospheric Cover Backdrop Hero & Chapter Directory
+   Immersive Blurred Cover Backdrop, Crisp Foreground Poster, Clean Grid
    ========================================================================== */
 
-.detail-archive-monograph {
-  max-width: 880px;
+.detail-page-container {
+  max-width: 1040px;
   margin: 0 auto;
   position: relative;
   padding: 8px 0 60px;
 }
 
-/* 动态封面环境色光晕 (Ambient Cover Halo) */
-.monograph-ambient-halo {
-  position: absolute;
-  top: -20px;
-  left: -20px;
-  width: 480px;
-  height: 480px;
-  pointer-events: none;
-  filter: blur(80px);
-  border-radius: 50%;
-  z-index: 0;
-  opacity: 0.9;
-  transition: background 0.6s ease;
-}
-
-/* 01. 极简返回导航 (‹ COLLECTION) */
-.editorial-back-nav {
-  margin-bottom: 24px;
+/* 01. 顶部电影感大画幅封面背景 (Atmospheric Cover Backdrop Banner) */
+.manga-backdrop-hero {
   position: relative;
-  z-index: 1;
+  overflow: hidden;
+  border-radius: var(--radius-lg);
+  margin-bottom: 36px;
+  background: #1c1815;
+  box-shadow: 0 16px 40px rgba(43, 36, 30, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.editorial-back-link {
+.backdrop-img {
+  position: absolute;
+  inset: -20px;
+  background-size: cover;
+  background-position: center 25%;
+  filter: blur(28px) brightness(0.48) saturate(1.25);
+  transform: scale(1.08);
+  z-index: 0;
+  pointer-events: none;
+}
+
+.backdrop-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(22, 19, 17, 0.35) 0%, rgba(22, 19, 17, 0.75) 55%, rgba(22, 19, 17, 0.94) 100%);
+  z-index: 1;
+  pointer-events: none;
+}
+
+.backdrop-content {
+  position: relative;
+  z-index: 2;
+  padding: 24px 32px 36px;
+  color: #fdfaf5;
+}
+
+/* 极简返回导航 */
+.detail-back-nav {
+  margin-bottom: 20px;
+}
+
+.detail-back-btn {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
-  color: var(--text-muted);
+  gap: 6px;
+  color: rgba(253, 250, 245, 0.85);
   text-decoration: none;
-  font-size: 11.5px;
-  font-weight: 700;
-  letter-spacing: 0.14em;
-  transition: color 0.15s ease, transform 0.15s ease;
-  padding: 4px 0;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 6px 14px;
+  border-radius: var(--radius-full);
+  background: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  transition: all 0.2s ease;
 }
 
-.editorial-back-link .back-glyph {
-  font-size: 15px;
-  line-height: 1;
-}
-
-.editorial-back-link:hover {
-  color: var(--accent-terra);
+.detail-back-btn:hover {
+  background: rgba(0, 0, 0, 0.55);
+  color: #ffffff;
   transform: translateX(-2px);
 }
 
-/* 02. 精致紧凑的画册展台 Hero */
-.monograph-hero {
-  display: grid;
-  grid-template-columns: 200px 1fr;
-  gap: 36px;
+/* 主展位卡片 (Hero Card) */
+.detail-hero-card {
+  display: flex;
+  gap: 32px;
   align-items: flex-start;
-  position: relative;
-  z-index: 1;
-  margin-bottom: 44px;
-  padding-bottom: 36px;
-  border-bottom: 1px solid var(--border-medium);
 }
 
-.monograph-artwork-mount {
-  width: 100%;
-  max-width: 200px;
+.detail-cover-mount {
+  width: 175px;
   aspect-ratio: 2 / 3;
-  position: relative;
-  border-radius: 3px;
+  border-radius: 10px;
   overflow: hidden;
-  background: var(--color-sand);
-  border: 1px solid var(--border-medium);
-  box-shadow: 0 10px 30px rgba(43, 36, 30, 0.12);
+  box-shadow: 0 14px 36px rgba(0, 0, 0, 0.5);
+  border: 2px solid rgba(255, 255, 255, 0.22);
   flex-shrink: 0;
+  background: #2b241e;
 }
 
-.monograph-artwork-mount img {
+.detail-cover-mount img {
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -1462,207 +1474,224 @@ body.mobile-nav-open .mobile-nav-drawer {
   display: block;
 }
 
-.monograph-lead-info {
+.detail-info-pane {
   display: flex;
   flex-direction: column;
+  gap: 12px;
+  flex: 1;
+  min-width: 0;
+}
+
+.detail-tag-row {
+  display: flex;
+  flex-wrap: wrap;
   gap: 8px;
-}
-
-.monograph-source-tag {
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.16em;
-  color: var(--accent-teal);
-  text-transform: uppercase;
-}
-
-.monograph-title {
-  font-size: clamp(22px, 3.2vw, 32px);
-  font-weight: 700;
-  color: var(--text-main);
-  line-height: 1.25;
-  margin: 0;
-}
-
-.monograph-counts-strip {
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  color: var(--text-muted);
-}
-
-.monograph-counts-strip .sep {
-  color: var(--border-medium);
-  margin: 0 4px;
-}
-
-/* 编辑型上次品读模块 (Editorial Last Read Block) */
-.monograph-last-read {
-  margin-top: 14px;
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-  max-width: 320px;
-}
-
-.last-read-label {
-  font-size: 9.5px;
-  font-weight: 700;
-  letter-spacing: 0.16em;
-  color: var(--accent-terra);
-  text-transform: uppercase;
-}
-
-.last-read-divider {
-  height: 1px;
-  width: 100%;
-  background: var(--border-medium);
-  margin: 2px 0 6px;
-}
-
-.last-read-content {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.last-read-chapter {
-  font-size: 13.5px;
-  font-weight: 700;
-  color: var(--text-main);
-}
-
-.last-read-progress {
-  font-size: 11px;
-  color: var(--text-muted);
-}
-
-.last-read-action {
-  display: inline-flex;
   align-items: center;
-  gap: 4px;
-  margin-top: 6px;
-  font-size: 11.5px;
+}
+
+.detail-source-badge {
+  font-size: 11px;
   font-weight: 700;
-  color: var(--accent-terra);
-  text-decoration: none;
-  letter-spacing: 0.06em;
-  transition: opacity 0.15s ease, transform 0.15s ease;
-}
-
-.last-read-action:hover {
-  opacity: 0.85;
-  transform: translateX(2px);
-}
-
-.monograph-start-action {
-  margin-top: 10px;
-}
-
-.btn-start-reading {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  background: var(--accent-teal);
   color: #ffffff;
-  text-decoration: none;
-  padding: 7px 16px;
-  border-radius: 2px;
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  width: fit-content;
-  transition: background 0.15s ease, transform 0.15s ease;
+  background: var(--accent-terra);
+  padding: 3px 10px;
+  border-radius: var(--radius-full);
+  box-shadow: 0 2px 8px rgba(200, 104, 79, 0.3);
 }
 
-.btn-start-reading:hover {
-  background: var(--accent-teal-hover);
+.detail-stat-badge {
+  font-size: 11px;
+  font-weight: 600;
+  color: rgba(253, 250, 245, 0.9);
+  background: rgba(255, 255, 255, 0.14);
+  padding: 3px 10px;
+  border-radius: var(--radius-full);
+}
+
+.detail-title {
+  font-size: clamp(22px, 3.2vw, 32px);
+  font-weight: 800;
+  color: #ffffff;
+  line-height: 1.25;
+  margin: 2px 0 4px;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+
+.detail-meta-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 13px;
+  color: rgba(253, 250, 245, 0.82);
+}
+
+.detail-meta-group .meta-name {
+  color: rgba(253, 250, 245, 0.55);
+}
+
+.detail-actions-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+  margin-top: 6px;
+}
+
+.btn-read-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #ffffff;
+  color: #1c1815;
+  text-decoration: none;
+  padding: 10px 24px;
+  border-radius: var(--radius-full);
+  font-size: 14px;
+  font-weight: 700;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+  transition: all 0.2s ease;
+}
+
+.btn-read-primary:hover {
+  background: var(--accent-terra);
+  color: #ffffff;
   transform: translateY(-1px);
 }
 
-/* 03. 档案目录 (CHAPTER DIRECTORY) */
-.monograph-directory-section {
-  position: relative;
-  z-index: 1;
+.btn-read-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  text-decoration: none;
+  padding: 9px 20px;
+  border-radius: var(--radius-full);
+  font-size: 13.5px;
+  font-weight: 600;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  transition: all 0.2s ease;
 }
 
-.directory-editorial-head {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  border-bottom: 1px solid var(--border-medium);
-  padding-bottom: 8px;
-  margin-bottom: 16px;
+.btn-read-secondary:hover {
+  background: rgba(255, 255, 255, 0.25);
+  transform: translateY(-1px);
 }
 
-.dir-title-stack {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
+.detail-history-notice {
+  margin-top: 6px;
+  font-size: 12px;
+  color: rgba(253, 250, 245, 0.9);
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  padding: 7px 14px;
+  border-radius: 8px;
+  width: fit-content;
 }
 
-.dir-en-tag {
-  font-size: 9.5px;
-  font-weight: 700;
-  letter-spacing: 0.16em;
-  color: var(--accent-teal);
-  text-transform: uppercase;
-}
-
-.dir-cn-title {
-  font-size: 18px;
-  font-weight: 700;
-  color: var(--text-main);
-  margin: 0;
-}
-
-.dir-total-count {
-  font-size: 16px;
-  font-weight: 700;
-  color: var(--text-muted);
-}
-
-.directory-editorial-list {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 0 32px;
-}
-
-.directory-editorial-row {
+.history-notice-inner {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 12px 6px;
-  border-bottom: 1px solid rgba(186, 172, 157, 0.35);
-  text-decoration: none;
-  color: inherit;
-  transition: background 0.15s ease, padding 0.15s ease;
-  border-radius: 2px;
+  gap: 6px;
 }
 
-.directory-editorial-row:hover {
-  background: rgba(255, 255, 255, 0.6);
-  padding-left: 10px;
-}
-
-.dir-index-num {
-  font-size: 14px;
-  font-weight: 700;
-  color: var(--accent-terra);
-  width: 22px;
+.notice-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #49b382;
+  box-shadow: 0 0 6px rgba(73, 179, 130, 0.8);
   flex-shrink: 0;
 }
 
-.dir-item-content {
-  flex: 1;
-  min-width: 0;
+/* 02. 下方内容区域：作品简介与章节列表 */
+.detail-body-container {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 28px;
 }
 
-.dir-chapter-title {
+.detail-section {
+  background: var(--bg-card);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 24px 28px;
+  box-shadow: var(--shadow-sm);
+}
+
+.section-title {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--text-main);
+  margin-bottom: 12px;
+}
+
+.synopsis-desc {
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--text-secondary);
+}
+
+.chapters-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 18px;
+  border-bottom: 1px solid var(--border-subtle);
+  padding-bottom: 12px;
+}
+
+.chapters-header .section-title {
+  margin-bottom: 0;
+}
+
+.chapters-count {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+/* 章节网格卡片流 */
+.chapter-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  gap: 12px;
+}
+
+.chapter-card {
+  background: var(--bg-card-solid);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 12px 14px;
+  text-decoration: none;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  transition: all 0.18s ease;
+  position: relative;
+}
+
+.chapter-card:hover {
+  background: #ffffff;
+  border-color: var(--accent-terra);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-sm);
+}
+
+.chapter-card-active {
+  border-color: var(--accent-terra);
+  background: var(--accent-terra-bg);
+}
+
+.chapter-card-active .chapter-card-title {
+  color: var(--accent-terra);
+}
+
+.chapter-card-title {
   font-size: 13.5px;
   font-weight: 600;
   color: var(--text-main);
@@ -1672,89 +1701,99 @@ body.mobile-nav-open .mobile-nav-drawer {
   line-height: 1.35;
 }
 
-.directory-editorial-row:hover .dir-chapter-title {
-  color: var(--accent-terra);
-}
-
-.dir-chapter-meta {
-  font-size: 10.5px;
+.chapter-card-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 11px;
   color: var(--text-muted);
 }
 
-.dir-vol-label {
+.chap-vol-tag {
   color: var(--accent-teal);
+  font-weight: 600;
 }
 
-.dir-hover-arrow {
-  font-size: 12px;
-  color: var(--text-muted);
-  opacity: 0;
-  transform: translateX(-4px);
-  transition: opacity 0.15s ease, transform 0.15s ease;
-  flex-shrink: 0;
+.chap-page-tag {
+  background: rgba(0, 0, 0, 0.04);
+  padding: 1px 6px;
+  border-radius: 4px;
 }
 
-.directory-editorial-row:hover .dir-hover-arrow {
-  opacity: 1;
-  transform: translateX(0);
-  color: var(--accent-terra);
-}
-
-.empty-directory {
-  font-size: 12.5px;
+.empty-chapters {
+  font-size: 13px;
   color: var(--text-muted);
   padding: 24px 0;
+  text-align: center;
 }
 
-/* 响应式适配 (Mobile Intentional Layout) */
+/* 响应式适配 (Mobile) */
 @media (max-width: 768px) {
-  .detail-archive-monograph {
-    padding: 4px 0 40px;
+  .detail-page-container {
+    padding: 0 0 40px;
   }
 
-  .monograph-hero {
-    grid-template-columns: 1fr;
-    gap: 18px;
+  .manga-backdrop-hero {
+    margin: -16px -12px 24px;
+    border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+  }
+
+  .backdrop-content {
+    padding: 16px 14px 24px;
+  }
+
+  .detail-hero-card {
+    flex-direction: column;
+    align-items: center;
     text-align: center;
-    justify-items: center;
-    margin-bottom: 32px;
-    padding-bottom: 24px;
+    gap: 16px;
+    margin-top: 8px;
   }
 
-  .monograph-artwork-mount {
-    width: 150px;
+  .detail-cover-mount {
+    width: 140px;
     margin: 0 auto;
   }
 
-  .monograph-lead-info {
+  .detail-info-pane {
     align-items: center;
     text-align: center;
-    gap: 6px;
+  }
+
+  .detail-tag-row {
+    justify-content: center;
+  }
+
+  .detail-actions-row {
+    justify-content: center;
     width: 100%;
   }
 
-  .monograph-title {
-    font-size: 20px;
-  }
-
-  .monograph-last-read {
-    margin: 10px auto 4px;
-    align-items: center;
-    text-align: center;
+  .btn-read-primary {
     width: 100%;
+    justify-content: center;
   }
 
-  .last-read-divider {
-    max-width: 180px;
+  .btn-read-secondary {
+    width: 100%;
+    justify-content: center;
   }
 
-  .directory-editorial-list {
-    grid-template-columns: 1fr;
-    gap: 0;
+  .detail-history-notice {
+    margin: 6px auto 0;
   }
 
-  .directory-editorial-row {
-    padding: 10px 4px;
+  .detail-section {
+    padding: 18px 16px;
+  }
+
+  .chapter-grid {
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    gap: 10px;
+  }
+
+  .chapter-card {
+    padding: 10px 12px;
   }
 }
 
