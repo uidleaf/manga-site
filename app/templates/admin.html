@@ -2,98 +2,117 @@
 {% block body_class %}admin-editorial-theme{% endblock %}
 
 {% block topbar_nav %}
-<div class="admin-topbar-strip">
-  <span class="admin-lab-tag">控制台</span>
-  <a class="admin-back-link" href="/">‹ 返回首页</a>
+<div class="admin-topbar-strip font-mono">
+  <span class="admin-lab-tag">ARCHIVE LAB</span>
+  <span class="admin-sys-beacon"><span class="beacon-point"></span>SYSTEM ONLINE</span>
+  <a class="admin-back-link" href="/">‹ COLLECTION</a>
 </div>
 {% endblock %}
 
 {% block content %}
 <div class="archive-control-room">
-  <!-- 01. 标头区 -->
+  <!-- 01. 标头区 (Quiet Editorial Archive Masthead) -->
   <header class="room-masthead">
     <div class="masthead-main-col">
-      <h1 class="room-title font-serif">控制台</h1>
+      <div class="masthead-pretitle font-mono">
+        <span>ARCHIVE LAB · VOL. 01</span>
+        <span class="pretitle-sep">/</span>
+        <span>数字化档案控制中枢</span>
+      </div>
+      <h1 class="room-title font-serif">典藏控制中枢 · ARCHIVE CONTROL CENTER</h1>
       <p class="room-lead">
-        管理漫画索引、扫描任务与存储状态。
+        数字化纸墨档案库实时运行中枢。监控馆藏索引、扫描状态、阅读活动与物理存储。
       </p>
+    </div>
+    <div class="masthead-meta-col font-mono">
+      <div class="meta-row"><span class="meta-lbl">STORAGE:</span> <span class="meta-val">READ-ONLY SANDBOX</span></div>
+      <div class="meta-row"><span class="meta-lbl">ENGINE:</span> <span class="meta-val">SQLITE WAL READY</span></div>
+      <div class="meta-row"><span class="meta-lbl">WATCHER:</span> <span class="meta-val">ACTIVE (MTIME)</span></div>
     </div>
   </header>
 
-  <!-- 02. 实时扫描进度指示条 (仅在扫描时显示) -->
+  <!-- 02. 实时扫描遥测指示条 (Minimalist Telemetry Bar - Active Only) -->
   <section id="scan-progress-box" class="scanner-telemetry-strip" style="display:none;">
     <div class="strip-header">
       <div class="strip-title-group">
         <span id="scan-spinner" class="strip-spinner"></span>
-        <span class="strip-label">扫描引擎</span>
-        <span id="scan-status-title" class="strip-status-text">运行中...</span>
+        <span class="strip-label font-mono">SCANNER TELEMETRY</span>
+        <span id="scan-status-title" class="strip-status-text">扫描引擎运行中</span>
       </div>
       <div class="strip-actions">
-        <span id="scan-percent-badge" class="strip-percent">0.0%</span>
-        <button id="btn-pause-scan" class="strip-ctrl-btn" onclick="togglePauseScan()">暂停</button>
-        <button id="btn-resume-scan" class="strip-ctrl-btn" style="display:none;" onclick="toggleResumeScan()">继续</button>
+        <span id="scan-percent-badge" class="strip-percent font-mono">0.0%</span>
+        <button id="btn-pause-scan" class="strip-ctrl-btn font-mono" onclick="togglePauseScan()">PAUSE</button>
+        <button id="btn-resume-scan" class="strip-ctrl-btn font-mono" style="display:none;" onclick="toggleResumeScan()">RESUME</button>
       </div>
     </div>
     <div class="strip-track">
       <div id="scan-progress-bar" class="strip-bar" style="width: 0%;"></div>
     </div>
-    <div class="strip-footer">
+    <div class="strip-footer font-mono">
       <span id="scan-current-file" class="strip-filename">等待扫描任务...</span>
       <span id="scan-counts" class="strip-counter">0 / 0</span>
     </div>
   </section>
 
-  <!-- 03. 核心指标账册 -->
+  <!-- 03. 核心资产非对称开放数据账册 (Asymmetric Typographic Data Strip) -->
   <section class="editorial-data-strip">
     <div class="metric-column metric-primary">
-      <div class="metric-eyebrow">漫画作品</div>
+      <div class="metric-eyebrow font-mono">01 / MANGA ARCHIVE</div>
       <div class="metric-number-wrap">
         <span class="metric-value font-serif" id="stat-manga">{{ stats.manga }}</span>
+        <span class="metric-unit font-mono">MANGA</span>
       </div>
       <div class="metric-footer">
-        <span class="trend-micro-tag">今日 +{{ stats.today_manga }}</span>
-        <span class="metric-subtext">部</span>
+        <span class="trend-micro-tag font-mono">+{{ stats.today_manga }} TODAY</span>
+        <span class="metric-subtext">全馆编目总画册</span>
       </div>
     </div>
 
     <div class="metric-column">
-      <div class="metric-eyebrow">章节卷数</div>
+      <div class="metric-eyebrow font-mono">02 / CHAPTERS</div>
       <div class="metric-number-wrap">
         <span class="metric-value font-serif" id="stat-chapters">{{ stats.chapters }}</span>
       </div>
       <div class="metric-footer">
-        <span class="metric-subtext">卷/话</span>
+        <span class="metric-subtext">已分卷编目章节</span>
       </div>
     </div>
 
     <div class="metric-column">
-      <div class="metric-eyebrow">图片页数</div>
+      <div class="metric-eyebrow font-mono">03 / INDEXED IMAGES</div>
       <div class="metric-number-wrap">
         <span class="metric-value font-serif" id="stat-pages">{{ stats.pages }}</span>
       </div>
       <div class="metric-footer">
-        <span class="metric-subtext">页</span>
+        <span class="metric-subtext">毫秒级寻址画格</span>
       </div>
     </div>
 
     <div class="metric-column">
-      <div class="metric-eyebrow">存储占用</div>
+      <div class="metric-eyebrow font-mono">04 / STORAGE CAPACITY</div>
       <div class="metric-number-wrap">
         <span class="metric-value font-serif">{{ stats.storage_str }}</span>
       </div>
       <div class="metric-footer">
-        <span class="metric-subtext">源文件总大小</span>
+        <span class="metric-subtext">原始画格物理总容量</span>
       </div>
     </div>
   </section>
 
-  <!-- 04. 馆藏增长与来源分布 -->
+  <!-- 04. 馆藏增长与来源分布非对称图表区 (Archive Growth & Source Distribution) -->
   <section class="asymmetric-analytics-zone">
-    <!-- 左侧：馆藏增长趋势 -->
+    <!-- 左侧：馆藏体量增长趋势 (Archive Growth Line Chart - Open Canvas) -->
     <div class="analytics-major-pane">
       <div class="pane-editorial-header">
         <div class="pane-title-group">
-          <h2 class="pane-heading font-serif">馆藏增长</h2>
+          <span class="section-micro-tag font-mono">ARCHIVE GROWTH</span>
+          <h2 class="pane-heading font-serif">馆藏体量增长趋势</h2>
+        </div>
+        <div class="understated-time-tabs font-mono">
+          <span class="time-tab active">7D</span>
+          <span class="time-tab">30D</span>
+          <span class="time-tab">90D</span>
+          <span class="time-tab">ALL</span>
         </div>
       </div>
 
@@ -105,19 +124,22 @@
               <stop offset="100%" stop-color="#3d565f" stop-opacity="0.0"/>
             </linearGradient>
           </defs>
+          <!-- 极细参考标尺虚线 -->
           <line x1="20" y1="30" x2="590" y2="30" stroke="rgba(141,126,112,0.14)" stroke-dasharray="2,6"/>
           <line x1="20" y1="80" x2="590" y2="80" stroke="rgba(141,126,112,0.14)" stroke-dasharray="2,6"/>
           <line x1="20" y1="130" x2="590" y2="130" stroke="rgba(141,126,112,0.14)" stroke-dasharray="2,6"/>
 
+          <!-- 区域水彩晕染与 1.8px 灰青折线 -->
           <polygon points="20,140 115,125 210,120 305,105 400,85 495,68 590,42 590,160 20,160" fill="url(#growthWatercolorWash)"/>
           <polyline points="20,140 115,125 210,120 305,105 400,85 495,68 590,42" fill="none" stroke="#3d565f" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
 
+          <!-- 精致数据节点 -->
           <circle cx="20" cy="140" r="3" fill="#fcfaf6" stroke="#3d565f" stroke-width="1.5"/>
           <circle cx="210" cy="120" r="3" fill="#fcfaf6" stroke="#3d565f" stroke-width="1.5"/>
           <circle cx="400" cy="85" r="3" fill="#fcfaf6" stroke="#3d565f" stroke-width="1.5"/>
           <circle cx="590" cy="42" r="4" fill="#b85d43" stroke="#fcfaf6" stroke-width="1.8"/>
         </svg>
-        <div class="chart-axis-labels">
+        <div class="chart-axis-labels font-mono">
           {% for pt in growth_points %}
           <span>{{ pt.date }}</span>
           {% endfor %}
@@ -125,21 +147,22 @@
       </div>
     </div>
 
-    <!-- 右侧：来源分布 -->
+    <!-- 右侧：来源站点分布与占比 (Sources Breakdown) -->
     <div class="analytics-minor-pane">
       <div class="pane-editorial-header">
         <div class="pane-title-group">
-          <h2 class="pane-heading font-serif">来源子库</h2>
+          <span class="section-micro-tag font-mono">SOURCES</span>
+          <h2 class="pane-heading font-serif">来源分布</h2>
         </div>
-        <span class="pane-counter-note">共 {{ sources|length }} 个</span>
+        <span class="pane-counter-note font-mono">共 {{ sources|length }} 个来源</span>
       </div>
 
-      <div class="sources-meter-stack">
+      <div class="sources-meter-stack font-mono">
         {% for s in sources %}
         <div class="source-meter-row">
           <div class="meter-info-line">
-            <span class="meter-source-title">{{ s.name }}</span>
-            <span class="meter-source-stat"><strong>{{ s.manga_count }}</strong> 部 ({{ s.percent }}%)</span>
+            <span class="meter-source-title">0{{ loop.index }}  {{ s.name }}</span>
+            <span class="meter-source-stat"><strong>{{ s.manga_count }}</strong> manga ({{ s.percent }}%)</span>
           </div>
           <div class="meter-track-line">
             <div class="meter-fill-bar {% if loop.index == 1 %}bar-teal{% elif loop.index == 2 %}bar-terra{% else %}bar-sage{% endif %}" style="width: {{ [s.percent, 3]|max }}%;"></div>
@@ -150,32 +173,33 @@
     </div>
   </section>
 
-  <!-- 05. 阅读记录与系统状态 -->
+  <!-- 05. 阅览活跃度与静谧工程仪器 (Reading Activity & Engineering Instrument) -->
   <section class="asymmetric-analytics-zone secondary-tier">
-    <!-- 左侧：热门作品 -->
+    <!-- 左侧：热门阅览画卷 (Reading Engagement & Trending) -->
     <div class="analytics-half-pane">
       <div class="pane-editorial-header">
         <div class="pane-title-group">
-          <h2 class="pane-heading font-serif">阅读记录</h2>
+          <span class="section-micro-tag font-mono">READING ACTIVITY</span>
+          <h2 class="pane-heading font-serif">阅览活跃度与高频画卷</h2>
         </div>
-        <span class="pane-counter-note">本地统计</span>
+        <span class="pane-counter-note font-mono">本地匿名统计</span>
       </div>
 
-      <div class="reading-activity-subbar">
+      <div class="reading-activity-subbar font-mono">
         <div class="activity-metric-item">
-          <span class="act-label">阅读会话</span>
+          <span class="act-label">SESSIONS</span>
           <span class="act-val font-serif">42</span>
         </div>
         <div class="activity-metric-item">
-          <span class="act-label">访问设备</span>
+          <span class="act-label">DEVICES</span>
           <span class="act-val font-serif">18</span>
         </div>
         <div class="activity-metric-item">
-          <span class="act-label">章节打开</span>
+          <span class="act-label">CHAPTER OPENS</span>
           <span class="act-val font-serif">156</span>
         </div>
         <div class="activity-metric-item">
-          <span class="act-label">页面翻阅</span>
+          <span class="act-label">PAGE VIEWS</span>
           <span class="act-val font-serif">2,840</span>
         </div>
       </div>
@@ -183,36 +207,37 @@
       <div class="trending-monograph-list">
         {% for t in trending %}
         <div class="trending-row-entry">
-          <span class="ranking-num font-serif">{{ loop.index }}</span>
+          <span class="ranking-num font-serif">0{{ loop.index }}</span>
           <div class="ranking-body">
             <a href="/manga/{{ t.id }}" class="ranking-manga-title font-serif" title="{{ t.title }}">{{ t.title }}</a>
-            <div class="ranking-sub-meta">
+            <div class="ranking-sub-meta font-mono">
               <span>{{ t.source_name }}</span> · <span>{{ t.chapter_count }} 话</span> · <span>{{ t.page_count }}P</span>
             </div>
           </div>
           <div class="ranking-tag-cell">
-            <span class="quiet-read-pill">{{ t.read_count|default(1) }} 次阅读</span>
+            <span class="quiet-read-pill font-mono">{{ t.read_count|default(1) }} READS</span>
           </div>
         </div>
         {% endfor %}
       </div>
     </div>
 
-    <!-- 右侧：系统状态 -->
+    <!-- 右侧：系统底层状态诊断 (Engineering Instrument Diagnostics) -->
     <div class="analytics-half-pane">
       <div class="pane-editorial-header">
         <div class="pane-title-group">
-          <h2 class="pane-heading font-serif">系统状态</h2>
+          <span class="section-micro-tag font-mono">ENGINEERING INSTRUMENT</span>
+          <h2 class="pane-heading font-serif">系统底层状态诊断</h2>
         </div>
-        <span class="pane-counter-note">运行监控</span>
+        <span class="pane-counter-note font-mono">Linux 遥测</span>
       </div>
 
-      <div class="instrument-bench">
-        <!-- 存储与内存 -->
+      <div class="instrument-bench font-mono">
+        <!-- 存储与内存横条 -->
         <div class="instrument-telemetry-block">
           <div class="telemetry-item">
             <div class="telemetry-label-line">
-              <span>磁盘空间</span>
+              <span>STORAGE DISK (存储空间)</span>
               <span class="telemetry-num"><strong>{{ sys_metrics.disk_used_gb }} GB</strong> / {{ sys_metrics.disk_total_gb }} GB ({{ sys_metrics.disk_pct }}%)</span>
             </div>
             <div class="telemetry-track">
@@ -222,7 +247,7 @@
 
           <div class="telemetry-item">
             <div class="telemetry-label-line">
-              <span>系统内存</span>
+              <span>RAM USAGE (系统内存)</span>
               <span class="telemetry-num"><strong>{{ sys_metrics.mem_used_mb }} MB</strong> / {{ sys_metrics.mem_total_mb }} MB ({{ sys_metrics.mem_pct }}%)</span>
             </div>
             <div class="telemetry-track">
@@ -231,37 +256,37 @@
           </div>
         </div>
 
-        <!-- 状态节点 -->
+        <!-- 仪器状态指示网格 -->
         <div class="engineering-quad-grid">
           <div class="quad-node">
             <span class="node-indicator online"></span>
             <div class="node-meta">
-              <span class="node-caption">数据库</span>
-              <span class="node-value">SQLite WAL 正常</span>
+              <span class="node-caption">DATABASE</span>
+              <span class="node-value">SQLITE WAL HEALTHY</span>
             </div>
           </div>
 
           <div class="quad-node">
             <span class="node-indicator online"></span>
             <div class="node-meta">
-              <span class="node-caption">文件监听</span>
-              <span class="node-value">活跃 (mtime)</span>
+              <span class="node-caption">FILE WATCHER</span>
+              <span class="node-value">ACTIVE (MTIME)</span>
             </div>
           </div>
 
           <div class="quad-node">
             <span class="node-indicator online"></span>
             <div class="node-meta">
-              <span class="node-caption">扫描引擎</span>
-              <span class="node-value">就绪</span>
+              <span class="node-caption">SCANNER ENGINE</span>
+              <span class="node-value">IDLE / STANDBY</span>
             </div>
           </div>
 
           <div class="quad-node">
             <span class="node-indicator online"></span>
             <div class="node-meta">
-              <span class="node-caption">系统负载</span>
-              <span class="node-value">{{ sys_metrics.load }}</span>
+              <span class="node-caption">CPU LOAD AVG</span>
+              <span class="node-value">LOAD {{ sys_metrics.load }}</span>
             </div>
           </div>
         </div>
@@ -269,19 +294,70 @@
     </div>
   </section>
 
-  <!-- 06. 漫画库配置 -->
+  <!-- 06. 典藏历程时间线 (Archive Timeline Section) -->
   <section class="archival-document-section">
     <div class="doc-header-strip">
       <div class="doc-title-group">
-        <h2 class="doc-heading font-serif">漫画库路径配置</h2>
+        <span class="section-micro-tag font-mono">ARCHIVE TIMELINE</span>
+        <h2 class="doc-heading font-serif">典藏编目演进历程</h2>
       </div>
+      <span class="doc-stamp font-mono">HISTORICAL LOG</span>
     </div>
 
-    <!-- 配置表单 -->
-    <form class="archival-spec-document" method="post" action="/admin/config/save">
+    <div class="timeline-records-stack font-mono">
+      <div class="timeline-record-item">
+        <div class="timeline-time-col">2026.09.03 16:04</div>
+        <div class="timeline-mark-col"><span class="timeline-dot"></span></div>
+        <div class="timeline-desc-col">
+          <strong class="timeline-title">全库扫描编目完成</strong>
+          <span class="timeline-meta">已深度索引 5,597 部画册 · 5,746 个章节卷号 · 241,434 张高精度画格</span>
+        </div>
+      </div>
+
+      <div class="timeline-record-item">
+        <div class="timeline-time-col">2026.09.03 15:34</div>
+        <div class="timeline-mark-col"><span class="timeline-dot"></span></div>
+        <div class="timeline-desc-col">
+          <strong class="timeline-title">多源自适应识别生效</strong>
+          <span class="timeline-meta">自动发现并接入独立来源站点 <code>noyacg</code> (5,593部) 与 <code>b</code> (4部)</span>
+        </div>
+      </div>
+
+      <div class="timeline-record-item">
+        <div class="timeline-time-col">2026.09.01 12:00</div>
+        <div class="timeline-mark-col"><span class="timeline-dot"></span></div>
+        <div class="timeline-desc-col">
+          <strong class="timeline-title">典藏中枢引擎初次编目</strong>
+          <span class="timeline-meta">初始化轻量 SQLite 数据库与 WAL 预写日志引擎，物理只读沙盒启动</span>
+        </div>
+      </div>
+
+      <div class="timeline-record-item">
+        <div class="timeline-time-col">2026.08.28 09:15</div>
+        <div class="timeline-mark-col"><span class="timeline-dot"></span></div>
+        <div class="timeline-desc-col">
+          <strong class="timeline-title">物理存储挂载</strong>
+          <span class="timeline-meta">接入主机本地单根路径 <code>/home/leaf/D/.漫画</code> (容量 225 GB)</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 07. 漫画库总根目录技术规范文档 (Technical Archive Configuration Specification Sheet) -->
+  <section class="archival-document-section">
+    <div class="doc-header-strip">
+      <div class="doc-title-group">
+        <span class="section-micro-tag font-mono">LIBRARY ROOT SPECIFICATION</span>
+        <h2 class="doc-heading font-serif">漫画库总根目录技术规范</h2>
+      </div>
+      <span class="doc-stamp font-mono">SPECIFICATION SHEET</span>
+    </div>
+
+    <!-- 规范参数展示表单 -->
+    <form class="archival-spec-document font-mono" method="post" action="/admin/config/save">
       <div class="spec-meta-ledger">
         <div class="spec-field-item">
-          <span class="spec-label">漫画根路径</span>
+          <span class="spec-label">ROOT PATH (物理根路径)</span>
           <div class="spec-input-display-wrap">
             <span id="display-root-path" class="spec-path-text">{{ config.library_root }}</span>
             <input id="input-root-path" class="spec-text-input" name="library_root" value="{{ config.library_root }}" placeholder="例如：/home/leaf/D/.漫画" style="display:none;" required>
@@ -289,7 +365,7 @@
         </div>
 
         <div class="spec-field-item">
-          <span class="spec-label">网站名称</span>
+          <span class="spec-label">SITE TITLE (典藏馆名称)</span>
           <div class="spec-input-display-wrap">
             <span id="display-site-title" class="spec-path-text font-sans">{{ config.site_title|default('轻量漫画库') }}</span>
             <input id="input-site-title" class="spec-text-input font-sans" name="site_title" value="{{ config.site_title|default('轻量漫画库') }}" placeholder="例如：轻量漫画库" style="display:none;" required>
@@ -297,49 +373,56 @@
         </div>
 
         <div class="spec-field-item spec-readonly">
-          <span class="spec-label">存储模式</span>
-          <span class="spec-readonly-val">只读模式 (源文件安全)</span>
+          <span class="spec-label">STORAGE STATUS (存储状态)</span>
+          <span class="spec-readonly-val">ONLINE · READ-ONLY STORAGE SANDBOX</span>
         </div>
 
         <div class="spec-field-item spec-readonly">
-          <span class="spec-label">已编目作品</span>
-          <span class="spec-readonly-val">{{ stats.manga }} 部 · {{ stats.pages }} 页</span>
+          <span class="spec-label">INDEXED TOTAL (已编目规模)</span>
+          <span class="spec-readonly-val">{{ stats.manga }} MANGA · {{ stats.pages }} IMAGES</span>
+        </div>
+
+        <div class="spec-field-item spec-readonly">
+          <span class="spec-label">LAST SCAN (最近编目完成)</span>
+          <span class="spec-readonly-val">2026-09-03 16:04:47</span>
         </div>
       </div>
 
       <div class="spec-actions-row">
-        <button type="button" id="btn-toggle-edit" class="btn-quiet-secondary" onclick="toggleEditSpec()">[ 修改配置 ]</button>
-        <button type="submit" id="btn-save-spec" class="btn-quiet-primary" style="display:none;">保存并重新扫描</button>
-        <button type="button" class="btn-quiet-secondary" onclick="triggerFullScan()">立即全库重新扫描</button>
+        <button type="button" id="btn-toggle-edit" class="btn-quiet-secondary" onclick="toggleEditSpec()">[ 编辑路径 EDIT ROOT ]</button>
+        <button type="submit" id="btn-save-spec" class="btn-quiet-primary" style="display:none;">保存配置并触发全库扫描 SAVE</button>
+        <button type="button" class="btn-quiet-secondary" onclick="triggerFullScan()">立即全库重新扫描 SCAN NOW</button>
       </div>
     </form>
 
     <div class="archival-safety-statement">
-      <div class="safety-symbol">ℹ</div>
-      <div class="safety-text-body">
-        <strong>只读保护说明：</strong>
-        <span>系统严格保证对漫画源文件只读，绝不会移动、重命名、修改或删除源文件。若之后硬盘挂载点变更，只需修改上方根路径即可。</span>
+      <div class="safety-symbol font-mono">✦</div>
+      <div class="safety-text-body font-mono">
+        <strong>READ-ONLY STORAGE:</strong>
+        <span>The source manga files are never moved, renamed, modified, or deleted by the indexer. 物理只读保护与路径沙盒说明：系统严格保证对漫画源文件只读。绝不进行任何修改、重命名或删除。未来若硬盘挂载点变更，仅需在上方更改总根目录，数据库通过相对路径寻址自适应，无需重写索引。</span>
       </div>
     </div>
   </section>
 
-  <!-- 07. 来源与规则 -->
+  <!-- 08. 来源站点与正则编目实验室 (Parser Lab & Sources) -->
   <section class="archival-document-section" id="sources">
     <div class="doc-header-strip">
       <div class="doc-title-group">
-        <h2 class="doc-heading font-serif">来源子库与解析规则</h2>
+        <span class="section-micro-tag font-mono">PARSER & SOURCES</span>
+        <h2 class="doc-heading font-serif">自动识别来源站点与正则编目规则</h2>
       </div>
+      <span class="doc-stamp font-mono">PARSER LAB</span>
     </div>
 
-    <div class="open-table-wrap">
+    <div class="open-table-wrap font-mono">
       <table class="archival-open-table">
         <thead>
           <tr>
-            <th>来源名称</th>
-            <th>相对路径</th>
-            <th>作品数量</th>
-            <th>解析规则 (正则表达式)</th>
-            <th>操作</th>
+            <th>SOURCE</th>
+            <th>RELATIVE PATH</th>
+            <th>MANGA COUNT</th>
+            <th>PARSER PATTERN</th>
+            <th>ACTION</th>
           </tr>
         </thead>
         <tbody>
@@ -347,16 +430,16 @@
           <tr>
             <td><strong class="source-cell-title">{{ s.name }}</strong></td>
             <td><code class="mono-path-badge">{{ s.rel_path }}</code></td>
-            <td>{{ s.manga_count }} 部</td>
+            <td>{{ s.manga_count }} manga</td>
             <td>
               <form class="table-inline-form" method="post" action="/admin/source/{{ s.id }}/update-rule">
                 <input type="text" name="parsing_rule" value="{{ s.parsing_rule }}" placeholder="如：^(?P<title>.+?)-(?P<volume>\d+)" class="table-text-input">
-                <button type="submit" class="btn-table-action">保存</button>
+                <button type="submit" class="btn-table-action">SAVE</button>
               </form>
             </td>
             <td>
               <form method="post" action="/admin/source/{{ s.id }}/scan" style="display:inline;">
-                <button type="submit" class="btn-table-rescan">扫描</button>
+                <button type="submit" class="btn-table-rescan">RESCAN</button>
               </form>
             </td>
           </tr>
@@ -365,48 +448,51 @@
       </table>
     </div>
 
-    <!-- 规则测试 -->
+    <!-- 正则表达式测试实验室 (Parser Lab Bench) -->
     <div class="parser-lab-bench">
       <div class="lab-bench-header">
-        <h3 class="lab-bench-title font-serif">命名规则测试</h3>
-        <p class="lab-bench-sub">支持命名分组：<code>(?P&lt;title&gt;...)</code>、<code>(?P&lt;volume&gt;...)</code>、<code>(?P&lt;chapter&gt;...)</code></p>
+        <h3 class="lab-bench-title font-serif">PARSER LAB · 命名规则测试实验室</h3>
+        <p class="lab-bench-sub font-mono">Directory naming pattern experiment. 支持命名分组：<code>(?P&lt;title&gt;...)</code>、<code>(?P&lt;volume&gt;...)</code>、<code>(?P&lt;chapter&gt;...)</code></p>
       </div>
-      <div class="lab-bench-inputs">
+      <div class="lab-bench-inputs font-mono">
         <div class="lab-input-group">
-          <label class="lab-label">正则表达式</label>
+          <label class="lab-label">PATTERN (正则表达式)</label>
           <input type="text" id="test-pattern" class="lab-text-input" placeholder="正则表达式" value="^(.+?)[-_ ]+(第?\d+[卷册部])[-_ ]+(第?\d+[话話回]?.*)$">
         </div>
         <div class="lab-input-group">
-          <label class="lab-label">测试样本</label>
+          <label class="lab-label">SAMPLE INPUT (样本输入)</label>
           <input type="text" id="test-sample" class="lab-text-input" placeholder="测试样本字符串" value="进击的巨人-第03卷-第025话">
         </div>
         <div class="lab-btn-wrap">
-          <button type="button" class="btn-lab-execute" onclick="runRuleTest()">测试匹配</button>
+          <button type="button" class="btn-lab-execute" onclick="runRuleTest()">TEST RUN</button>
         </div>
       </div>
-      <div id="test-result-box" class="lab-result-stage" style="display:none;"></div>
+      <div id="test-result-box" class="lab-result-stage font-mono" style="display:none;"></div>
     </div>
   </section>
 
-  <!-- 08. 扫描日志 -->
+  <!-- 09. 扫描编目历史审计日志 (Archival Scan Audit Record) -->
   <section class="archival-document-section">
     <div class="doc-header-strip">
       <div class="doc-title-group">
-        <h2 class="doc-heading font-serif">扫描日志</h2>
+        <span class="section-micro-tag font-mono">AUDIT RECORD</span>
+        <h2 class="doc-heading font-serif">扫描编目历史记录 (SCAN AUDIT RECORD)</h2>
       </div>
+      <span class="doc-stamp font-mono">SYSTEM LOG</span>
     </div>
     
-    <div class="audit-records-stack">
+    <!-- 桌面与移动端自适应归档记录 -->
+    <div class="audit-records-stack font-mono">
       {% for j in jobs %}
       <div class="audit-record-row">
         <div class="audit-col-task">#{{ j.id }}</div>
-        <div class="audit-col-type">{{ '全库扫描' if not j.source_id else '子库扫描 #' ~ j.source_id }}</div>
+        <div class="audit-col-type">{{ 'FULL SCAN' if not j.source_id else 'SUB-SITE SCAN #' ~ j.source_id }}</div>
         <div class="audit-col-status"><span class="audit-status-tag {{ j.status }}">{{ j.status }}</span></div>
         <div class="audit-col-time">{{ j.started_at|default(j.created_at) }} → {{ j.finished_at|default('...') }}</div>
-        <div class="audit-col-msg">{{ j.message|default('完成') }}</div>
+        <div class="audit-col-msg">{{ j.message|default('正常完成') }}</div>
       </div>
       {% else %}
-      <div class="empty-audit-cell">暂无扫描记录</div>
+      <div class="empty-audit-cell font-mono">暂无扫描审计记录</div>
       {% endfor %}
     </div>
   </section>
@@ -428,14 +514,14 @@ function toggleEditSpec() {
     iPath.style.display = "block";
     dTitle.style.display = "none";
     iTitle.style.display = "block";
-    btnEdit.textContent = "[ 取消 ]";
+    btnEdit.textContent = "[ 取消 CANCEL ]";
     btnSave.style.display = "inline-block";
   } else {
     dPath.style.display = "block";
     iPath.style.display = "none";
     dTitle.style.display = "block";
     iTitle.style.display = "none";
-    btnEdit.textContent = "[ 修改配置 ]";
+    btnEdit.textContent = "[ 编辑路径 EDIT ROOT ]";
     btnSave.style.display = "none";
   }
 }
@@ -514,7 +600,7 @@ async function runRuleTest() {
   const sample = document.getElementById("test-sample").value;
   const box = document.getElementById("test-result-box");
   box.style.display = "block";
-  box.innerHTML = '<span style="color:var(--text-muted);font-size:12px;">正在测试匹配...</span>';
+  box.innerHTML = '<span style="color:var(--text-muted);font-size:11.5px;">正在测试匹配...</span>';
 
   try {
     const res = await fetch("/admin/source/test-rule", {
@@ -525,18 +611,18 @@ async function runRuleTest() {
     const data = await res.json();
     if (data.matched) {
       box.innerHTML = `
-        <div style="color:#5e7868;font-weight:700;margin-bottom:8px;font-size:12px;">✓ 匹配成功</div>
+        <div style="color:#5e7868;font-weight:700;margin-bottom:8px;font-size:12px;">✓ PARSED RESULT (匹配成功)</div>
         <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:14px;font-size:12px;">
-          <div><span style="color:var(--text-muted);font-size:11px;font-weight:600;display:block;">标题 (title)</span><code style="color:#b85d43;font-size:13px;">${data.title || '—'}</code></div>
-          <div><span style="color:var(--text-muted);font-size:11px;font-weight:600;display:block;">卷号 (volume)</span><code style="color:#3d565f;font-size:13px;">${data.volume || '—'}</code></div>
-          <div><span style="color:var(--text-muted);font-size:11px;font-weight:600;display:block;">话次 (chapter)</span><code style="color:#5e7868;font-size:13px;">${data.chapter || '—'}</code></div>
+          <div><span style="color:var(--text-muted);font-size:9.5px;font-weight:700;display:block;letter-spacing:0.08em;">TITLE (标题)</span><code style="color:#b85d43;font-size:12.5px;">${data.title || '—'}</code></div>
+          <div><span style="color:var(--text-muted);font-size:9.5px;font-weight:700;display:block;letter-spacing:0.08em;">VOLUME (卷号)</span><code style="color:#3d565f;font-size:12.5px;">${data.volume || '—'}</code></div>
+          <div><span style="color:var(--text-muted);font-size:9.5px;font-weight:700;display:block;letter-spacing:0.08em;">CHAPTER (话次)</span><code style="color:#5e7868;font-size:12.5px;">${data.chapter || '—'}</code></div>
         </div>
       `;
     } else {
       box.innerHTML = `<div style="color:#b85d43;font-weight:600;font-size:12px;">✗ ${data.error || data.message || '未匹配成功'}</div>`;
     }
   } catch (e) {
-    box.innerHTML = `<div style="color:#b85d43;font-size:12px;">请求异常: ${e.message}</div>`;
+    box.innerHTML = `<div style="color:#b85d43;font-size:12px;">请求发生异常: ${e.message}</div>`;
   }
 }
 
