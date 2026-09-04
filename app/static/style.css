@@ -1372,101 +1372,132 @@ body.mobile-nav-open .mobile-nav-drawer {
 }
 
 /* ==========================================================================
-   Manga Detail Page · Atmospheric Cover Backdrop Hero & Chapter Directory
-   Immersive Blurred Cover Backdrop, Crisp Foreground Poster, Clean Grid
+   Manga Detail Page · Full-Page Blurred Cover Backdrop with Sharp Foreground
+   Original cover duplicated, scaled to full background, blurred + dimmed
    ========================================================================== */
 
-.detail-page-container {
-  max-width: 1040px;
-  margin: 0 auto;
-  position: relative;
-  padding: 8px 0 60px;
+body.detail-cover-theme .ambient-canvas {
+  display: none;
 }
 
-/* 01. 顶部电影感大画幅封面背景 (Atmospheric Cover Backdrop Banner) */
-.manga-backdrop-hero {
-  position: relative;
+body.detail-cover-theme {
+  background-color: #141210;
+  color: #f5f2eb;
+}
+
+body.detail-cover-theme .topbar {
+  background: rgba(20, 18, 16, 0.78);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+body.detail-cover-theme .brand-title {
+  color: #ffffff;
+}
+
+body.detail-cover-theme .nav-link {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+body.detail-cover-theme .nav-link:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+}
+
+body.detail-cover-theme .mobile-menu-toggle {
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+/* 全页面背景：复制封面 + 放大铺满 + 高斯模糊 + 降低透明度 + 深色遮罩 */
+.fullpage-cover-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
   overflow: hidden;
-  border-radius: var(--radius-lg);
-  margin-bottom: 36px;
-  background: #1c1815;
-  box-shadow: 0 16px 40px rgba(43, 36, 30, 0.12);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.backdrop-img {
-  position: absolute;
-  inset: -20px;
-  background-size: cover;
-  background-position: center 25%;
-  filter: blur(28px) brightness(0.48) saturate(1.25);
-  transform: scale(1.08);
-  z-index: 0;
+  z-index: -1;
   pointer-events: none;
+  background-color: #141210;
 }
 
-.backdrop-overlay {
+.backdrop-cover-img {
+  position: absolute;
+  top: -10%;
+  left: -10%;
+  width: 120%;
+  height: 120%;
+  object-fit: cover;
+  object-position: center;
+  filter: blur(40px);
+  opacity: 0.38;
+}
+
+.backdrop-dark-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, rgba(22, 19, 17, 0.35) 0%, rgba(22, 19, 17, 0.75) 55%, rgba(22, 19, 17, 0.94) 100%);
-  z-index: 1;
-  pointer-events: none;
+  background: rgba(20, 18, 16, 0.72);
 }
 
-.backdrop-content {
+/* 前景内容包裹容器 */
+.detail-content-wrap {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 16px 0 60px;
   position: relative;
-  z-index: 2;
-  padding: 24px 32px 36px;
-  color: #fdfaf5;
+  z-index: 1;
 }
 
-/* 极简返回导航 */
+/* 返回按钮 */
 .detail-back-nav {
-  margin-bottom: 20px;
+  margin-bottom: 24px;
 }
 
-.detail-back-btn {
+.detail-back-link {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  color: rgba(253, 250, 245, 0.85);
+  color: rgba(255, 255, 255, 0.85);
   text-decoration: none;
   font-size: 13px;
   font-weight: 600;
   padding: 6px 14px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.14);
   border-radius: var(--radius-full);
-  background: rgba(0, 0, 0, 0.3);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
-  border: 1px solid rgba(255, 255, 255, 0.15);
   transition: all 0.2s ease;
 }
 
-.detail-back-btn:hover {
-  background: rgba(0, 0, 0, 0.55);
+.detail-back-link:hover {
+  background: rgba(255, 255, 255, 0.2);
   color: #ffffff;
   transform: translateX(-2px);
 }
 
-/* 主展位卡片 (Hero Card) */
-.detail-hero-card {
+/* 前景主体：左侧高清清晰封面，右侧信息 */
+.detail-hero-section {
   display: flex;
-  gap: 32px;
+  gap: 36px;
   align-items: flex-start;
+  margin-bottom: 36px;
 }
 
-.detail-cover-mount {
-  width: 175px;
+.detail-cover-wrapper {
+  width: 190px;
   aspect-ratio: 2 / 3;
+  flex-shrink: 0;
   border-radius: 10px;
   overflow: hidden;
-  box-shadow: 0 14px 36px rgba(0, 0, 0, 0.5);
-  border: 2px solid rgba(255, 255, 255, 0.22);
-  flex-shrink: 0;
-  background: #2b241e;
+  box-shadow: 0 14px 36px rgba(0, 0, 0, 0.65);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: #1c1815;
 }
 
-.detail-cover-mount img {
+.detail-foreground-cover {
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -1474,67 +1505,41 @@ body.mobile-nav-open .mobile-nav-drawer {
   display: block;
 }
 
-.detail-info-pane {
+.detail-info-column {
+  flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  flex: 1;
+  gap: 14px;
   min-width: 0;
 }
 
-.detail-tag-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  align-items: center;
-}
-
-.detail-source-badge {
-  font-size: 11px;
-  font-weight: 700;
-  color: #ffffff;
-  background: var(--accent-terra);
-  padding: 3px 10px;
-  border-radius: var(--radius-full);
-  box-shadow: 0 2px 8px rgba(200, 104, 79, 0.3);
-}
-
-.detail-stat-badge {
-  font-size: 11px;
-  font-weight: 600;
-  color: rgba(253, 250, 245, 0.9);
-  background: rgba(255, 255, 255, 0.14);
-  padding: 3px 10px;
-  border-radius: var(--radius-full);
-}
-
 .detail-title {
-  font-size: clamp(22px, 3.2vw, 32px);
+  font-size: clamp(22px, 3.5vw, 32px);
   font-weight: 800;
   color: #ffffff;
   line-height: 1.25;
-  margin: 2px 0 4px;
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+  margin: 0;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
 }
 
-.detail-meta-group {
+.detail-meta-list {
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  font-size: 13px;
-  color: rgba(253, 250, 245, 0.82);
+  gap: 6px;
+  font-size: 13.5px;
+  color: rgba(255, 255, 255, 0.8);
 }
 
-.detail-meta-group .meta-name {
-  color: rgba(253, 250, 245, 0.55);
+.detail-meta-item .meta-label {
+  color: rgba(255, 255, 255, 0.5);
 }
 
-.detail-actions-row {
+.detail-buttons-row {
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
   align-items: center;
-  margin-top: 6px;
+  margin-top: 4px;
 }
 
 .btn-read-primary {
@@ -1542,13 +1547,13 @@ body.mobile-nav-open .mobile-nav-drawer {
   align-items: center;
   gap: 8px;
   background: #ffffff;
-  color: #1c1815;
+  color: #141210;
   text-decoration: none;
   padding: 10px 24px;
   border-radius: var(--radius-full);
   font-size: 14px;
   font-weight: 700;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
   transition: all 0.2s ease;
 }
 
@@ -1564,7 +1569,7 @@ body.mobile-nav-open .mobile-nav-drawer {
   gap: 6px;
   background: rgba(255, 255, 255, 0.12);
   color: #ffffff;
-  border: 1px solid rgba(255, 255, 255, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.22);
   text-decoration: none;
   padding: 9px 20px;
   border-radius: var(--radius-full);
@@ -1576,28 +1581,24 @@ body.mobile-nav-open .mobile-nav-drawer {
 }
 
 .btn-read-secondary:hover {
-  background: rgba(255, 255, 255, 0.25);
+  background: rgba(255, 255, 255, 0.22);
   transform: translateY(-1px);
 }
 
-.detail-history-notice {
-  margin-top: 6px;
-  font-size: 12px;
-  color: rgba(253, 250, 245, 0.9);
-  background: rgba(0, 0, 0, 0.35);
+.detail-last-read-box {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12.5px;
+  color: rgba(255, 255, 255, 0.9);
+  background: rgba(0, 0, 0, 0.4);
   border: 1px solid rgba(255, 255, 255, 0.12);
   padding: 7px 14px;
   border-radius: 8px;
   width: fit-content;
 }
 
-.history-notice-inner {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.notice-dot {
+.detail-last-read-box .read-dot {
   width: 7px;
   height: 7px;
   border-radius: 50%;
@@ -1606,65 +1607,58 @@ body.mobile-nav-open .mobile-nav-drawer {
   flex-shrink: 0;
 }
 
-/* 02. 下方内容区域：作品简介与章节列表 */
-.detail-body-container {
-  display: flex;
-  flex-direction: column;
-  gap: 28px;
-}
-
-.detail-section {
-  background: var(--bg-card);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  border: 1px solid var(--border-subtle);
+/* 模块卡片 (简介 & 章节) */
+.detail-block {
+  background: rgba(28, 24, 21, 0.65);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: var(--radius-lg);
   padding: 24px 28px;
-  box-shadow: var(--shadow-sm);
+  margin-bottom: 24px;
 }
 
-.section-title {
-  font-size: 17px;
-  font-weight: 700;
-  color: var(--text-main);
-  margin-bottom: 12px;
-}
-
-.synopsis-desc {
-  font-size: 14px;
-  line-height: 1.7;
-  color: var(--text-secondary);
-}
-
-.chapters-header {
+.block-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 18px;
-  border-bottom: 1px solid var(--border-subtle);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   padding-bottom: 12px;
 }
 
-.chapters-header .section-title {
+.block-title {
+  font-size: 17px;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 10px;
+}
+
+.block-header .block-title {
   margin-bottom: 0;
 }
 
-.chapters-count {
+.block-subtitle {
   font-size: 13px;
-  font-weight: 600;
-  color: var(--text-muted);
+  color: rgba(255, 255, 255, 0.5);
 }
 
-/* 章节网格卡片流 */
-.chapter-grid {
+.block-desc {
+  font-size: 14px;
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.78);
+}
+
+/* 章节网格 */
+.chapters-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
   gap: 12px;
 }
 
 .chapter-card {
-  background: var(--bg-card-solid);
-  border: 1px solid var(--border-subtle);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: var(--radius-md);
   padding: 12px 14px;
   text-decoration: none;
@@ -1672,33 +1666,31 @@ body.mobile-nav-open .mobile-nav-drawer {
   flex-direction: column;
   gap: 6px;
   transition: all 0.18s ease;
-  position: relative;
 }
 
 .chapter-card:hover {
-  background: #ffffff;
-  border-color: var(--accent-terra);
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.25);
   transform: translateY(-2px);
-  box-shadow: var(--shadow-sm);
 }
 
 .chapter-card-active {
   border-color: var(--accent-terra);
-  background: var(--accent-terra-bg);
+  background: rgba(200, 104, 79, 0.2);
 }
 
 .chapter-card-active .chapter-card-title {
-  color: var(--accent-terra);
+  color: #ffffff;
+  font-weight: 700;
 }
 
 .chapter-card-title {
   font-size: 13.5px;
   font-weight: 600;
-  color: var(--text-main);
+  color: rgba(255, 255, 255, 0.92);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  line-height: 1.35;
 }
 
 .chapter-card-meta {
@@ -1706,94 +1698,67 @@ body.mobile-nav-open .mobile-nav-drawer {
   align-items: center;
   justify-content: space-between;
   font-size: 11px;
-  color: var(--text-muted);
+  color: rgba(255, 255, 255, 0.45);
 }
 
-.chap-vol-tag {
-  color: var(--accent-teal);
-  font-weight: 600;
+.chap-vol {
+  color: rgba(255, 255, 255, 0.65);
 }
 
-.chap-page-tag {
-  background: rgba(0, 0, 0, 0.04);
+.chap-pages {
+  background: rgba(255, 255, 255, 0.08);
   padding: 1px 6px;
   border-radius: 4px;
 }
 
 .empty-chapters {
   font-size: 13px;
-  color: var(--text-muted);
+  color: rgba(255, 255, 255, 0.45);
   padding: 24px 0;
   text-align: center;
 }
 
-/* 响应式适配 (Mobile) */
+/* 响应式移动端适配 */
 @media (max-width: 768px) {
-  .detail-page-container {
-    padding: 0 0 40px;
-  }
-
-  .manga-backdrop-hero {
-    margin: -16px -12px 24px;
-    border-radius: 0 0 var(--radius-lg) var(--radius-lg);
-  }
-
-  .backdrop-content {
-    padding: 16px 14px 24px;
-  }
-
-  .detail-hero-card {
+  .detail-hero-section {
     flex-direction: column;
     align-items: center;
     text-align: center;
-    gap: 16px;
-    margin-top: 8px;
+    gap: 20px;
   }
 
-  .detail-cover-mount {
-    width: 140px;
+  .detail-cover-wrapper {
+    width: 150px;
     margin: 0 auto;
   }
 
-  .detail-info-pane {
+  .detail-info-column {
     align-items: center;
     text-align: center;
   }
 
-  .detail-tag-row {
-    justify-content: center;
-  }
-
-  .detail-actions-row {
+  .detail-buttons-row {
     justify-content: center;
     width: 100%;
   }
 
-  .btn-read-primary {
-    width: 100%;
-    justify-content: center;
-  }
-
+  .btn-read-primary,
   .btn-read-secondary {
     width: 100%;
     justify-content: center;
   }
 
-  .detail-history-notice {
-    margin: 6px auto 0;
+  .detail-last-read-box {
+    margin: 4px auto 0;
   }
 
-  .detail-section {
+  .detail-block {
     padding: 18px 16px;
   }
 
-  .chapter-grid {
+  .chapters-grid {
     grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
     gap: 10px;
-  }
-
-  .chapter-card {
-    padding: 10px 12px;
   }
 }
 
