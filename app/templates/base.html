@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <title>{{ config.site_title|default('轻量漫画库') }} · CURATED MANGA ARCHIVE</title>
-<link rel="stylesheet" href="/static/style.css?v=restore_01">
+<link rel="stylesheet" href="/static/style.css?v=20260904_header_only">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@500;600;700;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -54,8 +54,61 @@
       <span>控制台</span>
     </a>
   </nav>
+
+  <!-- 手机端极简汉堡菜单触发按钮 (Mobile Menu Toggle) -->
+  <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="打开菜单" type="button">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </button>
   {% endblock %}
 </header>
+
+<!-- 手机端优雅抽屉式菜单 (Curated Mobile Editorial Drawer) -->
+<div class="mobile-nav-backdrop" id="mobileNavBackdrop" aria-hidden="true"></div>
+<aside class="mobile-nav-drawer" id="mobileNavDrawer" aria-label="移动端导航">
+  <div class="drawer-head">
+    <div class="drawer-brand">
+      <div class="brand-mark">栞</div>
+      <div class="brand-text">
+        <span class="brand-title">{{ config.site_title|default('轻量漫画库') }}</span>
+        <span class="brand-subtitle">CURATED EDITION</span>
+      </div>
+    </div>
+    <button class="drawer-close-btn" id="mobileNavClose" aria-label="关闭菜单" type="button">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="18" y1="6" x2="6" y2="18"></line>
+        <line x1="6" y1="6" x2="18" y2="18"></line>
+      </svg>
+    </button>
+  </div>
+  <nav class="drawer-nav-list font-mono">
+    <a class="drawer-nav-link" href="/" onclick="closeMobileNav()">
+      <span class="drawer-link-zh">探索</span>
+      <span class="drawer-link-en">EXPLORE</span>
+    </a>
+    <a class="drawer-nav-link" href="/#search-section" onclick="closeMobileNav()">
+      <span class="drawer-link-zh">书架</span>
+      <span class="drawer-link-en">COLLECTION</span>
+    </a>
+    <a class="drawer-nav-link" href="/#continue-reading" onclick="closeMobileNav()">
+      <span class="drawer-link-zh">继续阅读</span>
+      <span class="drawer-link-en">CONTINUE READING</span>
+      <span class="drawer-badge" id="drawer-history-count" style="display:none;">0</span>
+    </a>
+    <a class="drawer-nav-link" href="/#search-section" onclick="closeMobileNav()">
+      <span class="drawer-link-zh">搜索</span>
+      <span class="drawer-link-en">SEARCH</span>
+    </a>
+    <div class="drawer-divider"></div>
+    <a class="drawer-nav-link drawer-admin-link" href="/admin" onclick="closeMobileNav()">
+      <span class="drawer-link-zh">控制台</span>
+      <span class="drawer-link-en">CONTROL CENTER</span>
+    </a>
+  </nav>
+</aside>
 
 <main class="container">
 {% block content %}{% endblock %}
@@ -140,16 +193,40 @@
     }
   };
 
+  // 移动端菜单抽屉控制
+  window.openMobileNav = function() {
+    document.body.classList.add("mobile-nav-open");
+  };
+  window.closeMobileNav = function() {
+    document.body.classList.remove("mobile-nav-open");
+  };
+
+  const toggleBtn = document.getElementById("mobileMenuToggle");
+  const closeBtn = document.getElementById("mobileNavClose");
+  const backdrop = document.getElementById("mobileNavBackdrop");
+  if (toggleBtn) toggleBtn.addEventListener("click", window.openMobileNav);
+  if (closeBtn) closeBtn.addEventListener("click", window.closeMobileNav);
+  if (backdrop) backdrop.addEventListener("click", window.closeMobileNav);
+  document.addEventListener("keydown", function(e) {
+    if (e.key === "Escape") window.closeMobileNav();
+  });
+
   // 顶部导航历史徽章更新
   async function updateNavBadge() {
     const list = await window.MangaArchive.getAllHistory();
     const item = document.getElementById("nav-history-item");
     const count = document.getElementById("nav-history-count");
+    const drawerCount = document.getElementById("drawer-history-count");
     if (list && list.length > 0) {
       if (item) item.style.display = "inline-flex";
       if (count) count.textContent = list.length;
+      if (drawerCount) {
+        drawerCount.style.display = "inline-flex";
+        drawerCount.textContent = list.length;
+      }
     } else {
       if (item) item.style.display = "none";
+      if (drawerCount) drawerCount.style.display = "none";
     }
   }
 
