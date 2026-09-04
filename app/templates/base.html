@@ -6,56 +6,44 @@
 <meta name="theme-color" content="#f6f1e8">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<title>{{ config.site_title|default('轻量漫画库') }} · CURATED MANGA ARCHIVE</title>
-<link rel="stylesheet" href="/static/style.css?v=20260904_secure_01">
+<title>{{ config.site_title|default('轻量漫画库') }}</title>
+<link rel="stylesheet" href="/static/style.css?v=20260904_natural_01">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@500;600;700;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body class="{% block body_class %}{% endblock %}">
 
-<!-- 多层柔和有机水彩与纸墨微粒肌理底衬 (Layered Atmospheric Watercolor Canvas) -->
+<!-- 柔和纸墨微粒与静谧底衬 -->
 <div class="ambient-canvas" aria-hidden="true">
   <div class="ambient-haze haze-teal"></div>
   <div class="ambient-haze haze-terracotta"></div>
   <div class="ambient-haze haze-sage"></div>
-  <div class="ambient-haze haze-ocean"></div>
-  <div class="ambient-haze haze-peach"></div>
   <div class="paper-grain"></div>
-  <div class="ambient-vignette"></div>
 </div>
 
-<!-- 杂志式轻量顶部导航 (Curated Editorial Header) -->
+<!-- 顶部导航 -->
 <header class="topbar">
   <div class="brand-wrapper">
-    <div class="brand-mark" title="栞 · 典藏印记">栞</div>
+    <div class="brand-mark" title="栞">栞</div>
     <a class="brand-text" href="/">
       <span class="brand-title">{{ config.site_title|default('轻量漫画库') }}</span>
-      <span class="brand-subtitle">CURATED MANGA LIBRARY</span>
     </a>
   </div>
 
   {% block topbar_nav %}
-  <nav class="topbar-nav font-mono">
-    <a class="nav-link nav-link-explore" href="/">
-      <span>探索</span><span class="nav-sub">EXPLORE</span>
-    </a>
-    <a class="nav-link nav-link-archive" href="/#search-section">
-      <span>书架</span><span class="nav-sub">COLLECTION</span>
-    </a>
-    <a class="nav-link nav-history-link" href="/#continue-reading" id="nav-history-item" style="display:none;">
-      <span>品读</span><span class="nav-sub">READING</span>
+  <nav class="topbar-nav">
+    <a class="nav-link" href="/">探索</a>
+    <a class="nav-link" href="/#archive">书架</a>
+    <a class="nav-link" href="/#continue-reading" id="nav-history-item" style="display:none;">
+      <span>继续阅读</span>
       <span class="nav-history-badge" id="nav-history-count">0</span>
     </a>
-    <a class="nav-link nav-search-trigger" href="/#search-section">
-      <span>检索</span><span class="nav-sub">SEARCH</span>
-    </a>
-    <a class="nav-link admin-pill" href="/admin" title="进入典藏管理控制台">
-      <span>控制台</span>
-    </a>
+    <a class="nav-link" href="/#archive">搜索</a>
+    <a class="nav-link admin-pill" href="/admin" title="管理控制台">控制台</a>
   </nav>
 
-  <!-- 手机端极简汉堡菜单触发按钮 (Mobile Menu Toggle) -->
+  <!-- 手机端汉堡菜单按钮 -->
   <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="打开菜单" type="button">
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
       <line x1="3" y1="6" x2="21" y2="6"></line>
@@ -66,7 +54,7 @@
   {% endblock %}
 </header>
 
-<!-- 手机端优雅抽屉式菜单 (Curated Mobile Editorial Drawer) -->
+<!-- 手机端导航抽屉 -->
 <div class="mobile-nav-backdrop" id="mobileNavBackdrop" aria-hidden="true"></div>
 <aside class="mobile-nav-drawer" id="mobileNavDrawer" aria-label="移动端导航">
   <div class="drawer-head">
@@ -74,7 +62,6 @@
       <div class="brand-mark">栞</div>
       <div class="brand-text">
         <span class="brand-title">{{ config.site_title|default('轻量漫画库') }}</span>
-        <span class="brand-subtitle">CURATED EDITION</span>
       </div>
     </div>
     <button class="drawer-close-btn" id="mobileNavClose" aria-label="关闭菜单" type="button">
@@ -84,28 +71,23 @@
       </svg>
     </button>
   </div>
-  <nav class="drawer-nav-list font-mono">
+  <nav class="drawer-nav-list">
     <a class="drawer-nav-link" href="/" onclick="closeMobileNav()">
       <span class="drawer-link-zh">探索</span>
-      <span class="drawer-link-en">EXPLORE</span>
     </a>
-    <a class="drawer-nav-link" href="/#search-section" onclick="closeMobileNav()">
+    <a class="drawer-nav-link" href="/#archive" onclick="closeMobileNav()">
       <span class="drawer-link-zh">书架</span>
-      <span class="drawer-link-en">COLLECTION</span>
     </a>
     <a class="drawer-nav-link" href="/#continue-reading" onclick="closeMobileNav()">
       <span class="drawer-link-zh">继续阅读</span>
-      <span class="drawer-link-en">CONTINUE READING</span>
       <span class="drawer-badge" id="drawer-history-count" style="display:none;">0</span>
     </a>
-    <a class="drawer-nav-link" href="/#search-section" onclick="closeMobileNav()">
+    <a class="drawer-nav-link" href="/#archive" onclick="closeMobileNav()">
       <span class="drawer-link-zh">搜索</span>
-      <span class="drawer-link-en">SEARCH</span>
     </a>
     <div class="drawer-divider"></div>
     <a class="drawer-nav-link drawer-admin-link" href="/admin" onclick="closeMobileNav()">
       <span class="drawer-link-zh">控制台</span>
-      <span class="drawer-link-en">CONTROL CENTER</span>
     </a>
   </nav>
 </aside>
@@ -114,7 +96,7 @@
 {% block content %}{% endblock %}
 </main>
 
-<!-- 本地离线免登录阅读历史引擎 (Client-Side Anonymous IndexedDB Engine) -->
+<!-- 本地离线免登录阅读历史引擎 -->
 <script>
 (function() {
   const DB_NAME = "MangaArchiveLocalDB";

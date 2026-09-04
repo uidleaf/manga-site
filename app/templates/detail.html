@@ -1,84 +1,83 @@
 {% extends 'base.html' %}
 {% block content %}
 <div class="detail-archive-monograph">
-  <!-- 动态封面环境色光晕 (Ambient Cover Color Field) -->
+  <!-- 封面环境光晕 -->
   <div class="monograph-ambient-halo" id="ambient-halo"></div>
 
-  <!-- 01. 极简返回导航 (‹ COLLECTION) -->
-  <nav class="editorial-back-nav" aria-label="返回画廊">
-    <a href="/#archive" class="editorial-back-link font-mono">
+  <!-- 01. 返回导航 -->
+  <nav class="editorial-back-nav" aria-label="返回书架">
+    <a href="/#archive" class="editorial-back-link">
       <span class="back-glyph">‹</span>
-      <span class="back-text">COLLECTION</span>
+      <span class="back-text">返回书架</span>
     </a>
   </nav>
 
-  <!-- 02. 精致紧凑的画册展台 Hero (Restrained Editorial Hero Composition) -->
+  <!-- 02. 作品信息 -->
   <section class="monograph-hero">
     <div class="monograph-artwork-mount">
       <img id="detail-cover-img" src="/thumb/{{ manga.id }}" alt="{{ manga.title }}" crossorigin="anonymous" onerror="this.onerror=null;this.src='/static/placeholder.svg';">
     </div>
 
     <div class="monograph-lead-info">
-      <div class="monograph-source-tag font-mono">
-        <span>{{ manga.source_name }} · SOURCE</span>
+      <div class="monograph-source-tag">
+        <span>{{ manga.source_name }}</span>
       </div>
 
       <h1 class="monograph-title font-serif">{{ manga.title }}</h1>
 
-      <div class="monograph-counts-strip font-mono">
-        <span>{{ manga.chapter_count }} CHAPTERS</span>
+      <div class="monograph-counts-strip">
+        <span>{{ manga.chapter_count }} 话</span>
         <span class="sep">·</span>
-        <span>{{ manga.page_count }} PAGES</span>
+        <span>{{ manga.page_count }}P</span>
       </div>
 
-      <!-- 本地阅读进度 (LAST READ - Editorial typography & hairline) -->
+      <!-- 本地阅读进度 -->
       <div class="monograph-last-read" id="detail-resume-wrap" style="display: none;">
-        <div class="last-read-label font-mono">LAST READ</div>
+        <div class="last-read-label">上次读到</div>
         <div class="last-read-divider"></div>
         <div class="last-read-content">
-          <div class="last-read-chapter font-serif" id="resume-chapter-text">-</div>
-          <div class="last-read-progress font-mono">
-            <span id="resume-page-text">1</span> / <span id="resume-total-text">{{ manga.page_count }}</span> PAGES
+          <div class="last-read-chapter" id="resume-chapter-text">-</div>
+          <div class="last-read-progress">
+            第 <span id="resume-page-text">1</span> / <span id="resume-total-text">{{ manga.page_count }}</span> 页
           </div>
         </div>
-        <a id="resume-btn" class="last-read-action font-mono" href="#">CONTINUE READING →</a>
+        <a id="resume-btn" class="last-read-action" href="#">继续阅读 →</a>
       </div>
 
       {% if first_chapter_id %}
       <div class="monograph-start-action" id="start-reading-wrap">
-        <a class="btn-start-reading font-mono" href="/read/{{ first_chapter_id }}">
-          <span>START READING →</span>
+        <a class="btn-start-reading" href="/read/{{ first_chapter_id }}">
+          <span>开始阅读</span>
         </a>
       </div>
       {% endif %}
     </div>
   </section>
 
-  <!-- 03. 档案目录 (CHAPTER DIRECTORY - Two-Column Archival List) -->
+  <!-- 03. 章节目录 -->
   <section class="monograph-directory-section">
     <div class="directory-editorial-head">
       <div class="dir-title-stack">
-        <span class="dir-en-tag font-mono">CHAPTER DIRECTORY</span>
         <h2 class="dir-cn-title font-serif">章节目录</h2>
       </div>
-      <span class="dir-total-count font-serif">{{ chapters|length }}</span>
+      <span class="dir-total-count">共 {{ chapters|length }} 话</span>
     </div>
 
-    <div class="directory-editorial-list font-mono">
+    <div class="directory-editorial-list">
       {% for ch in chapters %}
       <a class="directory-editorial-row" href="/read/{{ ch.id }}" id="chapter-item-{{ ch.id }}">
-        <span class="dir-index-num font-serif">{% if loop.index < 10 %}0{{ loop.index }}{% else %}{{ loop.index }}{% endif %}</span>
+        <span class="dir-index-num">{% if loop.index < 10 %}0{{ loop.index }}{% else %}{{ loop.index }}{% endif %}</span>
         <div class="dir-item-content">
-          <div class="dir-chapter-title font-serif">{{ ch.title }}</div>
-          <div class="dir-chapter-meta font-mono">
+          <div class="dir-chapter-title">{{ ch.title }}</div>
+          <div class="dir-chapter-meta">
             {% if ch.volume %}<span class="dir-vol-label">{{ ch.volume }}</span> · {% endif %}
-            <span>{{ ch.page_count }} PAGES</span>
+            <span>{{ ch.page_count }}P</span>
           </div>
         </div>
         <span class="dir-hover-arrow">→</span>
       </a>
       {% else %}
-      <div class="empty-directory font-mono">本作品暂无收录章节</div>
+      <div class="empty-directory">本作品暂无收录章节</div>
       {% endfor %}
     </div>
   </section>
@@ -99,9 +98,9 @@ document.addEventListener("DOMContentLoaded", async function() {
         ctx.drawImage(img, 0, 0, 10, 10);
         const p1 = ctx.getImageData(2, 2, 1, 1).data;
         const p2 = ctx.getImageData(7, 7, 1, 1).data;
-        halo.style.background = `radial-gradient(circle at 35% 25%, rgba(${p1[0]}, ${p1[1]}, ${p1[2]}, 0.15) 0%, rgba(${p2[0]}, ${p2[1]}, ${p2[2]}, 0.08) 45%, transparent 75%)`;
+        halo.style.background = `radial-gradient(circle at 35% 25%, rgba(${p1[0]}, ${p1[1]}, ${p1[2]}, 0.12) 0%, rgba(${p2[0]}, ${p2[1]}, ${p2[2]}, 0.06) 45%, transparent 75%)`;
       } catch (e) {
-        halo.style.background = `radial-gradient(circle at 35% 25%, rgba(200, 104, 79, 0.09) 0%, rgba(65, 90, 99, 0.06) 45%, transparent 75%)`;
+        halo.style.background = `radial-gradient(circle at 35% 25%, rgba(200, 104, 79, 0.08) 0%, rgba(65, 90, 99, 0.05) 45%, transparent 75%)`;
       }
     };
     if (img.complete) applyHalo();
